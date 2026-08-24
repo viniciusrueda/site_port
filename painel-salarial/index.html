@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buscador Salarial — CAGED</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  .overlay{position:fixed; inset:0; background:rgba(20,33,61,.55); z-index:50;
+    display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto;}
+  .overlay.hidden{display:none;}
+  .detail-panel{background:#F7F7F5; max-width:760px; width:100%; border:1px solid #14213D; margin-top:4vh;}
+  .detail-head{background:#14213D; color:#fff; padding:22px 26px; display:flex;
+    justify-content:space-between; align-items:flex-start; gap:16px;}
+  .detail-head h3{font-family:'Space Grotesk',sans-serif; font-size:19px; margin:0 0 4px;}
+  .detail-head .cbo-tag{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#9AA6BC;}
+  .detail-close{background:none; border:1px solid rgba(255,255,255,.4); color:#fff; cursor:pointer;
+    font-size:14px; padding:4px 10px; border-radius:2px; font-family:'IBM Plex Mono',monospace; flex-shrink:0;}
+  .detail-close:hover{background:rgba(255,255,255,.1);}
+  .detail-tabs{display:flex; border-bottom:1px solid #DADFE3; background:#fff;}
+  .detail-tab{padding:12px 18px; font-size:13px; font-family:'IBM Plex Mono',monospace;
+    color:#5C6470; cursor:pointer; border-bottom:2px solid transparent; user-select:none;}
+  .detail-tab.active{color:#14213D; border-bottom-color:#2E7D5B; font-weight:600;}
+  .detail-body{background:#fff; padding:22px 26px 30px; min-height:300px;}
+  .detail-body canvas{max-height:320px;}
+  .detail-loading{color:#5C6470; font-size:13px; text-align:center; padding:60px 0;}
+  .detail-empty{color:#5C6470; font-size:13px; text-align:center; padding:60px 0;}
+</style>
+<style>
+  :root{
+    --ink:#14213D; --paper:#F7F7F5; --card:#FFFFFF;
+    --green:#2E7D5B; --amber:#C98A2C; --slate:#5C6470; --line:#DADFE3;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+
+  .masthead{border-bottom:2px solid var(--ink);padding:40px 0 28px;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.08;margin:0 0 10px;}
+  .subtitle{color:var(--slate);font-size:14.5px;max-width:560px;line-height:1.55;}
+
+  .search-box{margin-top:28px;position:relative;}
+  .search-box input{
+    width:100%;padding:16px 18px;font-size:16px;font-family:'Inter',sans-serif;
+    border:1.5px solid var(--ink);background:var(--card);border-radius:2px;outline:none;
+  }
+  .search-box input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,91,.12);}
+  .search-meta{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--slate);margin-top:8px;}
+
+  .results{margin-top:4px;}
+  .result-row{
+    display:grid;grid-template-columns:1fr auto auto auto auto;gap:16px;align-items:center;
+    padding:16px 18px;background:var(--card);border:1px solid var(--line);border-top:none;
+    cursor:pointer;transition:background .12s;
+  }
+  .result-row:first-child{border-top:1px solid var(--line);}
+  .result-row:hover{background:#F0F4F1;}
+  .result-row .cargo{font-weight:600;font-size:14.5px;}
+  .result-row .cbo{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate);display:block;margin-top:2px;}
+  .result-row .metric{text-align:right;font-family:'IBM Plex Mono',monospace;}
+  .result-row .metric .v{font-size:14.5px;font-weight:600;}
+  .result-row .metric .l{font-size:10px;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;}
+  .result-row .metric.hi .v{color:var(--green);}
+
+  .empty{padding:40px 18px;text-align:center;color:var(--slate);background:var(--card);border:1px solid var(--line);border-top:none;font-size:14px;}
+
+  .placeholder-note{
+    margin-top:20px;border-left:3px solid var(--amber);background:#FBF4E8;
+    padding:12px 16px;font-size:13px;color:#5c4a24;line-height:1.5;
+  }
+
+  footer{padding:32px 0 44px;font-size:12px;color:var(--slate);text-align:center;}
+
+  @media (max-width:640px){
+    .result-row{grid-template-columns:1fr;gap:8px;}
+    .result-row .metric{text-align:left;display:flex;gap:6px;align-items:baseline;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="masthead">
+    <div class="eyebrow">Registro CAGED · Todas as ocupações</div>
+    <h1>Quanto paga cada profissão no Brasil</h1>
+    <p class="subtitle">
+      Busca por cargo ou código CBO, com piso, mediana, média e teto salarial calculados
+      a partir de admissões CLT declaradas ao Novo CAGED (jul/2024–jun/2025).
+    </p>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Buscar por cargo, ex: analista de dados, enfermeiro, motorista..." autocomplete="off">
+    </div>
+    <div class="search-meta" id="searchMeta">carregando base de cargos...</div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="placeholder-note" id="methodNote">
+    <b>Metodologia:</b> valores de admissão CLT declarados ao Novo CAGED (jul/2024–jun/2025),
+    nacional. Piso e teto calculados como percentil 5 e 95 (não mínimo/máximo), para reduzir
+    o efeito de erros de digitação no dado bruto. Ocupações com menos de 30 admissões no
+    período foram descartadas por baixa confiabilidade estatística.
+    <br><br>
+    <b>Pipeline:</b> extração via consultas SQL agregadas no Google BigQuery (dataset público
+    do CAGED/MTE) → tratamento e compactação dos dados em Python → arquivos JSON estáticos
+    consumidos direto pelo navegador, sem servidor ou banco de dados ativo.
+  </div>
+</div>
+
+<footer>Projeto pessoal de portfólio · Dados: Novo CAGED/MTE via Base dos Dados</footer>
+
+<div class="overlay hidden" id="overlay">
+  <div class="detail-panel">
+    <div class="detail-head">
+      <div>
+        <h3 id="detailCargo">—</h3>
+        <span class="cbo-tag" id="detailCboTag">—</span>
+      </div>
+      <button class="detail-close" id="detailClose">Fechar ✕</button>
+    </div>
+    <div class="detail-tabs">
+      <div class="detail-tab active" data-tab="evolucao">Evolução</div>
+      <div class="detail-tab" data-tab="uf">Estados</div>
+      <div class="detail-tab" data-tab="faixa">Faixa etária</div>
+      <div class="detail-tab" data-tab="porte">Porte</div>
+    </div>
+    <div class="detail-body" id="detailBody">
+      <div class="detail-loading">carregando...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- Dados de amostra (mesma estrutura que virá do JSON completo do BigQuery) ----
+const SAMPLE_DATA = [
+  { cbo: "1423-30", cargo: "Analista de BI (Business Intelligence)", piso: 1949, mediana: 4038.68, media: 5595.75, teto: 13883, amostra: 31317 },
+  { cbo: "2124-20", cargo: "Analista de Suporte de Banco de Dados", piso: 1800, mediana: 3990.66, media: 4650.30, teto: 9800, amostra: 65402 },
+  { cbo: "2124-10", cargo: "Analista de Redes e Comunicação de Dados", piso: 2100, mediana: 5527.58, media: 6120.40, teto: 12500, amostra: 27773 },
+  { cbo: "2124-05", cargo: "Administrador de Banco de Dados", piso: 2400, mediana: 6800.00, media: 7950.00, teto: 15200, amostra: 8210 },
+  { cbo: "3542-05", cargo: "Técnico em Contabilidade", piso: 1600, mediana: 2450.00, media: 2890.00, teto: 6100, amostra: 42100 },
+  { cbo: "2211-05", cargo: "Enfermeiro", piso: 1750, mediana: 3200.00, media: 3680.00, teto: 8400, amostra: 118500 },
+  { cbo: "7823-05", cargo: "Motorista de Caminhão", piso: 1550, mediana: 2100.00, media: 2340.00, teto: 4800, amostra: 203400 },
+  { cbo: "2522-05", cargo: "Analista de Recursos Humanos", piso: 1900, mediana: 3400.00, media: 4100.00, teto: 9200, amostra: 51200 }
+];
+
+let allData = [];
+
+function parseFlexible(text) {
+  // Tenta como JSON array normal primeiro
+  try {
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed)) return parsed;
+  } catch (e) { /* não é array JSON válido, tenta JSONL abaixo */ }
+
+  // Formato JSONL do BigQuery: uma linha = um objeto JSON, sem vírgulas/colchetes
+  return text
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+    .map(line => JSON.parse(line));
+}
+
+function normalizeRow(row) {
+  return {
+    cbo: row.cbo_2002 ?? row.cbo,
+    cargo: row.cargo,
+    piso: Number(row.piso),
+    mediana: Number(row.mediana),
+    media: Number(row.media),
+    teto: Number(row.teto),
+    amostra: Number(row.amostra)
+  };
+}
+
+async function loadData() {
+  try {
+    const res = await fetch('cargos.json');
+    if (!res.ok) throw new Error('json não encontrado');
+    const text = await res.text();
+    const parsed = parseFlexible(text);
+    allData = parsed.map(normalizeRow);
+    document.getElementById('searchMeta').textContent =
+      `${allData.length.toLocaleString('pt-BR')} ocupações carregadas (base completa)`;
+  } catch (e) {
+    allData = SAMPLE_DATA;
+    document.getElementById('searchMeta').textContent =
+      `${allData.length} ocupações de amostra — conecte cargos.json para a base completa`;
+  }
+  render(allData);
+}
+
+function fmt(v){ return 'R$ ' + Number(v).toLocaleString('pt-BR', {maximumFractionDigits:0}); }
+
+function render(list){
+  const el = document.getElementById('results');
+  if (!list.length){
+    el.innerHTML = '<div class="empty">Nenhum cargo encontrado para essa busca.</div>';
+    window.__lastRendered = [];
+    return;
+  }
+  window.__lastRendered = list.slice(0, 50);
+  el.innerHTML = list.slice(0, 50).map(item => `
+    <div class="result-row">
+      <div>
+        <div class="cargo">${item.cargo}</div>
+        <span class="cbo">CBO ${item.cbo} · n=${Number(item.amostra).toLocaleString('pt-BR')}</span>
+      </div>
+      <div class="metric"><div class="v">${fmt(item.piso)}</div><div class="l">Piso</div></div>
+      <div class="metric hi"><div class="v">${fmt(item.mediana)}</div><div class="l">Mediana</div></div>
+      <div class="metric"><div class="v">${fmt(item.media)}</div><div class="l">Média</div></div>
+      <div class="metric"><div class="v">${fmt(item.teto)}</div><div class="l">Teto</div></div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  if (!q){ render(allData); return; }
+  const filtered = allData.filter(item =>
+    item.cargo.toLowerCase().includes(q) || item.cbo.includes(q)
+  );
+  render(filtered);
+});
+
+// ---------------- Painel de detalhe ----------------
+const detailCache = {};
+let currentCboDetail = null;
+
+const DETAIL_FILES = {
+  evolucao: 'evolucao.json',
+  uf: 'uf.json',
+  faixa: 'faixa.json',
+  porte: 'porte.json'
+};
+
+function toObjects(compact) {
+  return compact.data.map(row => {
+    const obj = {};
+    compact.columns.forEach((col, i) => obj[col] = row[i]);
+    return obj;
+  });
+}
+
+async function getDetailData(tab) {
+  if (detailCache[tab]) return detailCache[tab];
+  const res = await fetch(DETAIL_FILES[tab]);
+  if (!res.ok) throw new Error('detalhe não encontrado: ' + tab);
+  const text = await res.text();
+  const compact = JSON.parse(text);
+  const objects = toObjects(compact);
+  detailCache[tab] = objects;
+  return objects;
+}
+
+let activeChart = null;
+function drawChart(type, labels, values, label) {
+  const body = document.getElementById('detailBody');
+  body.innerHTML = '<canvas id="detailCanvas"></canvas>';
+  if (activeChart) activeChart.destroy();
+  activeChart = new Chart(document.getElementById('detailCanvas'), {
+    type,
+    data: { labels, datasets: [{ label, data: values, backgroundColor: '#2E7D5B', borderColor: '#2E7D5B', borderRadius: 2, tension: 0.3 }] },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: '#DADFE3' }, ticks: { callback: v => 'R$ ' + Number(v).toLocaleString('pt-BR') } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+async function loadTab(tab) {
+  const body = document.getElementById('detailBody');
+  body.innerHTML = '<div class="detail-loading">carregando ' + tab + '...</div>';
+  try {
+    const rows = (await getDetailData(tab)).filter(r => r.cbo_2002 === currentCboDetail);
+    if (!rows.length) {
+      body.innerHTML = '<div class="detail-empty">Sem dados suficientes para este cargo nesta visão.</div>';
+      return;
+    }
+    if (tab === 'evolucao') {
+      rows.sort((a,b) => (a.ano*12+a.mes) - (b.ano*12+b.mes));
+      const labels = rows.map(r => String(r.mes).padStart(2,'0') + '/' + String(r.ano).slice(2));
+      drawChart('line', labels, rows.map(r => r.mediana), 'Mediana');
+    } else if (tab === 'uf') {
+      rows.sort((a,b) => b.mediana - a.mediana);
+      drawChart('bar', rows.map(r => r.sigla_uf), rows.map(r => r.mediana), 'Mediana');
+    } else if (tab === 'faixa') {
+      const order = ['Até 24','25-34','35-44','45-54','55+'];
+      rows.sort((a,b) => order.indexOf(a.faixa_etaria) - order.indexOf(b.faixa_etaria));
+      drawChart('bar', rows.map(r => r.faixa_etaria), rows.map(r => r.mediana), 'Mediana');
+    } else if (tab === 'porte') {
+      const order = ['Zero vínculos','1 a 4','5 a 9','10 a 19','20 a 49','50 a 99','100 a 249','250 a 499','500 a 999','1000 ou mais'];
+      rows.sort((a,b) => order.indexOf(a.porte) - order.indexOf(b.porte));
+      drawChart('bar', rows.map(r => r.porte), rows.map(r => r.mediana), 'Mediana');
+    }
+  } catch (e) {
+    body.innerHTML = '<div class="detail-empty">Não foi possível carregar esta visão ainda ' +
+      '(arquivo ' + DETAIL_FILES[tab] + ' não conectado).</div>';
+  }
+}
+
+function openDetail(item) {
+  currentCboDetail = item.cbo;
+  document.getElementById('detailCargo').textContent = item.cargo;
+  document.getElementById('detailCboTag').textContent = 'CBO ' + item.cbo + ' · n=' + item.amostra.toLocaleString('pt-BR');
+  document.getElementById('overlay').classList.remove('hidden');
+  document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.detail-tab[data-tab="evolucao"]').classList.add('active');
+  loadTab('evolucao');
+}
+
+document.getElementById('detailClose').addEventListener('click', () => {
+  document.getElementById('overlay').classList.add('hidden');
+});
+document.getElementById('overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'overlay') document.getElementById('overlay').classList.add('hidden');
+});
+document.querySelectorAll('.detail-tab').forEach(tabEl => {
+  tabEl.addEventListener('click', () => {
+    document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+    loadTab(tabEl.dataset.tab);
+  });
+});
+
+document.getElementById('results').addEventListener('click', (e) => {
+  const row = e.target.closest('.result-row');
+  if (!row) return;
+  const idx = Array.from(document.querySelectorAll('.result-row')).indexOf(row);
+  const item = window.__lastRendered[idx];
+  if (item) openDetail(item);
+});
+
+loadData();
+</script>
+
+</body>
+</html>

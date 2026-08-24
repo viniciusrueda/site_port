@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Portfólio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .header {
+            background-color:  #2c3e50;
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            font-family: 'Montserrat', sans-serif;
+            height: 77px;
+        }
+        .header nav {
+            display: flex;
+            justify-content: right;
+        }
+        .cv-button2 {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 10px;
+        }
+        .header nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 15px;
+            font-style: italic;
+            cursor: pointer;
+        }
+        .hero-container {
+            display: flex;
+            width: 100%;
+        }
+        .hero {
+            flex: 70%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            background: url('https://static.wixstatic.com/media/08fe21_6fc7cb797fc542dc8b4fea9e2cbd85f7~mv2_d_3610_2357_s_2.jpg/v1/fill/w_831,h_809,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/08fe21_6fc7cb797fc542dc8b4fea9e2cbd85f7~mv2_d_3610_2357_s_2.jpg') no-repeat center center;
+            background-size: cover;
+            color: white;
+            padding: 50px;
+            margin-top: 50px;
+            position: relative;
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .hero-text {
+            max-width: 50%;
+            position: relative;
+            z-index: 1;
+            text-align: left;
+            margin-left: 80px;
+            margin-top: 190px;
+        }
+        .hero-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+        }
+        .hero-text p {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+        }
+        .sidebar {
+            flex: 30%;
+            background-color:  #2c3e50;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            align-items: center;
+        }
+        .sidebar h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+        }
+        .sidebar img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons2 a {
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+        .btn-cv {
+            background-color: white;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .carousel-inner {
+            text-align: center;
+        }
+        .section-container {
+            padding: 80px 10%;
+            background: #f8f9fa;
+  
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            min-height: 660px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+}
+        .section-title {
+            color: #2c3e50;
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .expand-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            color: #4a5bdc;
+        }
+        .expand-button2 {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            color: #4a5bdc;
+        }
+        .expand-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .content-columns {
+            display: flex;
+            justify-content: space-between;
+        }
+        .content-columns div {
+            width: 45%;
+        }
+        .habilidades-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            max-width: 800px;
+            margin: auto;
+        }
+        .expand-container2 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            max-width: 800px;
+            margin: auto;
+            visibility: hidden;
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s ease, visibility 0.3s ease;
+        }
+
+        .expand-container2.visible {
+            visibility: visible;
+            height: auto;
+            overflow: visible;
+        }
+
+        .card {
+            width: 300px; /* Largura fixa */
+            height: 200px; /* Altura fixa */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        #habilidades {
+            background:  #2c3e50;
+            padding: 50px 0;
+            color: white;
+            text-align: center;
+        }
+        #title-h{
+            color: white;
+        }
+        #title-t{
+            color: white;
+        }
+
+        .projetos-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .projeto-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+            color: #2c3e50;
+            margin-bottom: 40px;
+
+        
+        }
+        .projeto-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .projeto-card h4 {
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+        .projeto-card p {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 10px 0;
+        }
+        .btn-projeto {
+            background: #4a5bdc;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .projeto-card:hover {
+            transform: scale(1.05);
+        }
+        .project-tittle{
+            margin-top: 50px;
+            text-align: center;
+            color: #2c3e50;
+            font-family: 'Playfair Display', serif;
+            
+        }
+        .main-container-project{
+            padding: 80px 10%;
+            background: #f8f9fa;
+  
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            min-height: 550px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .carousel-control-prev,
+        .carousel-control-next {
+            background-color: rgba(0, 0, 0, 0.5); 
+            top: 50%; 
+            transform: translateY(-50%); 
+            width: 50px; 
+            height: 50px;
+}
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            background-color: #2c3e50;
+            padding: 40px 10%;
+        }
+        .footer-section {
+            width: 48%;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .footer-dark {
+            background-color: #1e2a38;
+        }
+        .footer-light {
+            background-color: #aab7c4;
+            color: #2c3e50;
+        }
+        .footer-section h3 {
+            border-bottom: 3px solid white;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        .footer-section p, .footer-section a {
+            color: white;
+            text-decoration: none;
+        }
+        .footer-section a:hover {
+            text-decoration: underline;
+        }
+        .footer-form input, .footer-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-bottom: 2px solid white;
+            background: transparent;
+            color: white;
+        }
+        .footer-light .footer-form input, .footer-light .footer-form textarea {
+            border-bottom: 2px solid #2c3e50;
+            color: #2c3e50;
+        }
+        .footer-light .footer-form input::placeholder, .footer-light .footer-form textarea::placeholder {
+            color: rgba(44, 62, 80, 0.7);
+        }
+        .footer-form button {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .footer-form button:hover {
+            background: gray;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding: 20px;
+            background: #f0f0f0;
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+        .social-icons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .social-icons a {
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+        .cv-button {
+            display: block;
+            width: 380px;
+            margin: 20px auto;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #2c3e50;
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .cv-button:hover {
+            background-color: #2c3e50;
+            color: white;
+        }
+        
+        #resposta {
+            display: none;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .sucesso {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .erro {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Responsividade */
+@media screen and (max-width: 768px) {
+    .header {
+        text-align: center;
+        padding: 10px;
+        height: auto;
+    }
+
+    .header nav {
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .cv-button2 {
+        display: block;
+        margin-top: 10px;
+    }
+
+    .hero-container {
+        flex-direction: column;
+    }
+
+    .hero {
+        flex: 100%;
+        height: auto;
+        padding: 20px;
+        text-align: center;
+        background-position: center;
+    }
+
+    .hero-text {
+        max-width: 100%;
+        text-align: center;
+        margin-left: 0;
+        margin-top: 50px;
+    }
+
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+
+    .sidebar {
+        flex: 100%;
+        padding: 20px;
+    }
+
+    .section-container {
+        padding: 40px 5%;
+    }
+
+    .habilidades-container {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    .expand-container2 {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .projetos-container {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-section {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 40px;
+        height: 40px;
+    }
+
+    .btn-projeto {
+        padding: 6px 12px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .habilidades-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .expand-container2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .hero-text h1 {
+        font-size: 2rem;
+    }
+
+    .section-container p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+}
+
+/* ------------------ RESPONSIVIDADE ------------------ */
+
+
+@media screen and (max-width: 768px) {
+    .header {
+        height: auto;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .header nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .cv-button2 {
+        font-size: 12px;
+        padding: 6px 10px;
+        text-align: center;
+    }
+}
+
+
+@media screen and (max-width: 992px) {
+    .habilidades-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas no tablet */
+    }
+    .expand-container2 {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas no tablet */
+    }
+}
+
+
+@media screen and (max-width: 600px) {
+    .habilidades-container {
+        grid-template-columns: 1fr; /* 1 coluna no celular */
+    }
+    .expand-container2 {
+        grid-template-columns: 1fr; /* 1 coluna no celular */
+    }
+
+    .card {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav>
+         <a href="/download_curriculo" class="cv-button2" download>
+        FAÇA DOWNLOAD DO MEU CURRÍCULO</a>    
+        </nav>
+    </header>
+
+    <div class="hero-container">
+        <div class="hero">
+            <div class="hero-text">
+                <span style="letter-spacing:0.35em;" class="wixui-rich-text__text">OLÁ! EU SOU</span>
+                <h1 class="font_0 wixui-rich-text__text" style="line-height:0.9em; font-size:67px;">Vinícius</h1>
+                <h2><p style="line-height:0.9em; font-size:18px;">Especialista em BI, análise de dados e automação.</p></h2>
+                
+            </div>
+        </div>
+        <div class="sidebar">
+            <img src="https://i.ibb.co/ZpkzYnb5/Adobe-Express-file.png" alt="Foto de João">
+            <h2>Vinícius Rueda Lopes</h2>
+            <p>Analista de BI</p>
+            <p>São Paulo, SP</p>
+              <p>(11) 951163765</p>
+                <p>viniciusemail9@gmail.com</p>
+            <div class="social-icons2">
+                <a href="https://www.linkedin.com/in/vinicius-rueda-541544200" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+
+            </div>
+            
+
+            <a href="/download_curriculo" class="btn-cv" download>
+           Baixar CV</a>
+        </div>
+    </div>
+
+    <div id="carouselExample" class="carousel slide">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="section-container">
+                    <h2 class="section-title">Sobre Mim</h2>
+                    <p>Sou analista de Business Intelligence com experiência em análise de dados, criação de dashboards interativos e automação de processos. Atuação em empresas de diversos segmentos, desenvolvendo soluções estratégicas para otimização de campanhas de mídia, CRM e social mídia. Especialista em extração, tratamento e visualização de dados utilizando ferramentas como Power BI, Looker Studio e Tableau. Habilidade em consultas SQL para manipulação de grandes volumes de dados em bancos de dados relacionais e não relacionais. Conhecimento avançado em Python para automação de processos, integração de APIs e Web Scraping. Experiência com Google Analytics 4 (GA4) e Google Tag Manager (GTM) para rastreamento de eventos e conversões. Foco em geração de insights e melhoria da performance de campanhas através da análise de métricas e comportamento do usuário.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="section-container">
+                    <h2 style="margin-top: 10px" class="section-title" id="section-formacao">Formação Acadêmica</h2>
+                    <p>Graduado em Análise e Desenvolvimento de Sistemas - Fatec</p>
+                
+                               
+                    <h2 class="section-title" id="section-formacao">Cursos</h2>
+                    <p>•	Curso de Python + RPA + Criação de Projetos Reais - Udemy <br>
+•	Curso Web Moderno Completo com JavaScript + Projetos - Udemy <br>
+•	Java COMPLETO: Do Zero ao Profissional + Projetos! - Udemy <br>
+•	Desenvolvimento Web Completo - 20 cursos + 20 projetos - Udemy <br>
+•	Power BI Completo - Do Básico ao Avançado - Udemy <br>
+•	Curso de SEO Completo - Do básico ao avançado. – Udemy
+</p>
+                                        <h2 class="section-title" id="section-formacao">Idiomas</h2>
+                    <p>•	Inglês – Intermediário</p>
+                </div>
+
+            </div>
+            <div class="carousel-item">
+                <div class="section-container">
+                    <h2 class="section-title">Minhas Experiências</h2>
+                    <div style="font-size: 14px" class="experiencias-container">
+                        
+                        <div class="experiencia">
+                           <h3>Tif - Analista de BI Pleno</h3>
+                  <p><strong>Período:</strong> 10/2025 - Atualmente</p> <p>Desenvolvimento e manutenção de dashboards interativos no Looker Studio para monitoramento de KPIs de campanhas de mídia e CRM. Atuação na automação de processos de ETL via código para tratamento e consolidação de bases de dados, gerando insights estratégicos para otimização de performance.</p>
+                       </div>
+                        
+                        <div  class="experiencia">
+                            <h3>FCB - Analista de BI Pleno</h3>
+                            <p><strong>Período:</strong> 12/2024 – 10/2025</p>
+                            <p> Análise e desenvolvimento de relatórios de mídia digital, criação e manutenção de dashboards no Looker Studio, extração e manipulação de dados no BigQuery com SQL, automação de processos com Python, análise de GA4 e configuração de eventos no GTM, além da criação de ETLs para consolidar dados e gerar insights para otimização de campanhas.
+</p>
+                        </div>
+                        <div class="experiencia">
+                            <h3>IDK - Analista de BI Pleno (Freelancer)</h3>
+                            <p><strong>Período:</strong> 08/2024 – 09/2024</p>
+                            <p>Análise de dados e criação de relatórios de CRM no Salesforce Marketing Cloud, desenvolvimento de dashboards no Power BI/Looker, extração e otimização de dados com SQL, automação de processos analíticos, integração de dados para insights estratégicos e suporte a equipes de marketing e vendas na tomada de decisões..</p>
+                        </div>
+                    </div>
+                    <button class="expand-button2" id="expand1" onclick="toggleExpand('expand1', 'expandContainer')"><i class="fas fa-chevron-down"></i></button>
+                    <div style="font-size: 14px" class="expand-container" id="expandContainer">
+                    <div class="experiencia">
+                            <h3>Mootag - Analista de BI Júnior</h3>
+                            <p><strong>Período:</strong> 10/2023 – 08/2024</p>
+                            <p>Extração, limpeza e análise de dados de campanhas de mídia, com construção de dashboards e levantamento de insights. Experiência em ferramentas de mídia e social listening (Google Ads, Facebook Ads, Sprinklr, Dito CRM, Insider). Automação de processos e integração de APIs com Python para otimizar a coleta e atualização de dados, além de aplicação de técnicas avançadas de Web Scraping.</p>
+                        </div>
+                        
+                        <div class="experiencia">
+                            <h3>MediaBrands - Assistente de BI (Freelancer)</h3>
+                            <p><strong>Período:</strong> 12/2022 – 03/2023</p>
+                            <p>Validação das planilhas de campanhas de mídia (taxonomia) e auditoria dos dado.</p>
+                        </div>
+                        <div class="experiencia">
+                            <h3>REF+ - Analista de BI Júnior</h3>
+                            <p><strong>Período:</strong> 12/2020 – 06/2022</p>
+                            <p>Atuação estratégica no contato com clientes e equipes de atendimento, mídia e planejamento, garantindo o mapeamento de objetivos e definição de KPIs. Participação em todas as fases das campanhas de mídia, com coleta, tratamento e carga de dados (ETL) via Excel, Google Sheets e bancos de dados. Experiência em ferramentas de mídia e social listening (Google Ads, Facebook Ads, Stilingue, SimilarWeb, SuperMetrics, Quintly, Sprinklr) e criação de dashboards interativos no Looker Studio e Power BI para acompanhamento e apresentação de resultados.</p>
+                        </div>
+                        <div class="experiencia">
+                            <h3>NEOMOVE - Auxiliar Operacional</h3>
+                            <p><strong>Período:</strong> 06/2019 – 11/2019</p>
+                            <p>Validação de planilhas de mídia (taxonomia), setup e gerenciamento de campanhas no AdServer (Campaign Manager). Análise de resultados por meio de reports e auditoria de dados, incluindo verificação de tagueamento e discrepâncias.</p>
+                        </div>
+                        <div class="experiencia">
+                            <h3>Giga Art - Micro Empresário</h3>
+                            <p><strong>Período:</strong> 01/2011 – 06/2015</p>
+                            <p>Impressão digital, criação de adesivos e edição de imagens com CorelDraw e Photoshop.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+    </div>
+
+    
+
+
+    <div class="section-container" id="habilidades">
+        <h2 class="section-title" id="title-h">Habilidades</h2>
+        <h3 class="section-subtitle"id="title-t">TECNOLOGIAS E FERRAMENTAS</h3>
+    
+        <div class="habilidades-container">
+
+            <div class="card">
+                <h4>SQL</h4>
+                <p>Expertise em consultas avançadas para manipulação e extração de dados em grandes volumes.</p>
+            </div>
+            
+            <div class="card">
+                <h4>Power BI</h4>
+                <p>Capacidade avançada na criação de dashboards e análise de dados para tomada de decisão.</p>
+            </div>
+            <div class="card">
+                <h4>Python</h4>
+                <p>Experiência com automação de dados, web scraping e integração com APIs.</p>
+            </div>
+        </div>
+        
+        
+            <button class="expand-button2" id="expand2" onclick="toggleExpand2('expand2', 'expandContainer2')"><i class="fas fa-chevron-down"></i></button>
+ 
+        <div class="expand-container2" id="expandContainer2">
+            <div class="card">
+                <h4>Looker Studio</h4>
+                <p>Conhecimento avançado na criação de dashboards e análise de dados para tomada de decisão.</p>
+            </div>
+            <div class="card">
+                <h4>Salesforce</h4>
+                <p>Experiência em consultas e na criação de relatórios e automações no Marketing Cloud.</p>
+            </div>
+            <div class="card">
+                <h4>Pacote Office</h4>
+                <p>Proficiência em Excel, PowerPoint e Word, incluindo automação, análise de dados e apresentações profissionais.</p>
+            </div>
+          
+
+        </div>
+    </div>
+
+    <div class="main-container-project">
+        <div class="project-tittle">
+            <h2 class="section-title-projeto" >Meus Projetos</h2>
+            <h3 class="section-subtitle">DASHBOARDS E AUTOMAÇÕES</h3>
+        </div>
+        <div class="projetos-container">
+
+            <div class="projeto-card">
+              
+                <h4>Dashboards</h4>
+                <p>Dashboard interativo para análises, utilizando Power BI.</p>
+                <a href="dashboard" class="btn-projeto" target="_blank"style="background-color: #1e2a38;">Ver Mais</a>
+            </div>
+            <div class="projeto-card">
+               
+                <h4>Automação de Relatórios</h4>
+                <p>Exemplos de Scripts em Python para automatizações.</p>
+                <a href="automacao" class="btn-projeto" target="_blank" style="background-color: #1e2a38;">Ver Código</a>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section footer-dark">
+                <h3 style="color: white;">Dados Pessoais</h3>
+                <p><strong>Telefone:</strong> (11) 951163765</p>
+                <p><strong>Email:</strong> viniciusemail9@gmail.com</p>
+                <p><strong>Endereço:</strong> São Paulo, SP</p>
+            </div>
+            <div class="footer-section footer-light">
+                <h3>Fale Comigo</h3>
+                <form id="contato-form" class="footer-form" action="/enviar_mensagem" method="POST">
+                    <input type="text" name="nome" placeholder="Nome" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="text" name="telefone" placeholder="Telefone">
+                    <textarea name="mensagem" placeholder="Digite sua mensagem..." rows="3"></textarea>
+                    <button type="submit">Enviar</button>
+                </form>
+
+        <div id="resposta"></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <a href="/download_curriculo" class="cv-button" download>FAÇA DOWNLOAD DO MEU CURRÍCULO</a>
+
+            <p>&copy; 2025 Vinícius Rueda Lopes - Todos os direitos reservados.</p>
+            <div class="social-icons">
+                <a href="https://www.linkedin.com/in/vinicius-rueda-541544200" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-linkedin"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+        <script>
+document.getElementById("contato-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+    let form = this;
+    let formData = new FormData(form);
+    let respostaDiv = document.getElementById("resposta");
+
+    fetch("https://portfoliovinicius.com.br/receber_mensagem.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        respostaDiv.innerText = data.mensagem;
+        respostaDiv.classList.remove("erro", "sucesso");
+        
+        if (data.status === "success") {
+            respostaDiv.classList.add("sucesso");
+            form.reset(); // Limpa o formulário após envio bem-sucedido
+        } else {
+            respostaDiv.classList.add("erro");
+        }
+
+        respostaDiv.style.display = "block";
+
+        // Esconder a mensagem após 5 segundos
+        setTimeout(() => {
+            respostaDiv.style.display = "none";
+        }, 5000);
+    })
+    .catch(error => {
+        respostaDiv.innerText = "Erro ao enviar mensagem.";
+        respostaDiv.classList.remove("sucesso");
+        respostaDiv.classList.add("erro");
+        respostaDiv.style.display = "block";
+
+        setTimeout(() => {
+            respostaDiv.style.display = "none";
+        }, 5000);
+    });
+});
+
+
+function toggleExpand2(buttonId, containerId) { 
+    var expandContainer = document.getElementById(containerId);
+    var buttonIcon = document.querySelector("#" + buttonId + " i");
+ 
+    if (expandContainer.style.height === "0px" || expandContainer.style.height === "") {
+        expandContainer.style.visibility = "visible";
+        expandContainer.style.height = "auto"; 
+        expandContainer.style.overflow = "visible";
+
+        buttonIcon.classList.remove("fa-chevron-down");
+        buttonIcon.classList.add("fa-chevron-up");
+
+        setTimeout(() => {
+            expandContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 300);
+    } else {
+        expandContainer.style.visibility = "hidden";
+        expandContainer.style.height = "0px";
+        expandContainer.style.overflow = "hidden";
+        buttonIcon.classList.remove("fa-chevron-up");
+        buttonIcon.classList.add("fa-chevron-down");
+    }
+}
+            function toggleExpand(buttonId, containerId) {
+                var expandContainer = document.getElementById(containerId);
+                var buttonIcon = document.querySelector("#" + buttonId + " i");
+
+                if (expandContainer.style.display === "none" || expandContainer.style.display === "") {
+                    expandContainer.style.display = "grid";
+                    buttonIcon.classList.remove("fa-chevron-down");
+                    buttonIcon.classList.add("fa-chevron-up");
+                } else {
+                    expandContainer.style.display = "none";
+                    buttonIcon.classList.remove("fa-chevron-up");
+                    buttonIcon.classList.add("fa-chevron-down");
+                }
+            }
+                    </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+
+ 
+</body>
+</html>

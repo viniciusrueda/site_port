@@ -1,0 +1,18 @@
+RewriteEngine On
+
+# Permitir acesso ao PHP diretamente
+RewriteCond %{REQUEST_URI} ^/executar_codigo.php$ [OR]
+RewriteCond %{REQUEST_URI} ^/receber_mensagem.php$ [OR]
+RewriteCond %{REQUEST_URI} ^/teste_email.php$
+RewriteRule ^ - [L]
+
+# Redirecionar rotas amigáveis para os arquivos corretos
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^automacao$ /automacao.html [L]
+RewriteRule ^dashboard$ /dashboard.html [L]
+RewriteRule ^contato$ /contato.html [L]
+
+# Redireciona tudo para index.php (mantendo as rotas do PHP)
+RewriteCond %{REQUEST_URI} !^(index\.php|automacao\.html|dashboard\.html|contato\.html|executar_codigo\.php|receber_mensagem\.php)$
+RewriteRule ^(.*)$ index.php [QSA,L]
