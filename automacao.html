@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio - Automação</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        html, body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            margin-top: 100px;
+            flex: 1;
+        }
+        .code-box {
+            background: #2d2d2d;
+            border-radius: 5px;
+            color: white;
+        }
+        .code-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .btn-execute {
+            margin-top: 10px;
+        }
+        .navbar-brand{
+            margin-bottom: 10px;
+        }
+        .header {
+            background-color:  #333;
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            font-family: 'Montserrat', sans-serif;
+            height: 77px;
+        }
+        .header nav {
+            display: flex;
+            justify-content: left;
+            text-align: center;
+        }
+        .header nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 15px;
+            font-style: italic;
+            cursor: pointer;
+        }
+
+        footer {
+            background-color: #212529;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .code-box {
+            max-height: 300px; 
+            overflow: auto;
+            background: #2d2d2d; 
+            color: white; 
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        
+        /* ------------------ RESPONSIVIDADE ------------------ */
+        @media screen and (max-width: 768px) {
+            .header {
+                height: auto;
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .header nav {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            .header nav a {
+                font-size: 14px;
+                margin: 5px 0;
+            }
+            .container {
+                padding: 20px;
+                margin-top: 80px;
+            }
+            .text-center {
+                text-align: center;
+                font-size: 1.5rem;
+            }
+            .btn-execute {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+            footer {
+                padding: 15px;
+                text-align: center;
+            }
+            footer p {
+                font-size: 14px;
+            }
+        }
+
+        @media screen and (max-width: 992px) {
+            .code-box {
+                font-size: 14px;
+                max-height: 250px;
+                overflow-x: auto;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .code-box {
+                font-size: 12px;
+                padding: 8px;
+                max-height: 200px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .btn-execute {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a class="navbar-brand" href="/">Home</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <h2 class="text-center my-4">Exemplos de Automação</h2>
+
+        <div class="mb-5">
+            <h3 class="code-title">1. Extração de dados da API do YouTube Data salvo em Excel, coletando os vídeos mais populares nas principais categorias com métricas de engajamento.</h3>
+            <pre class="code-box"><code class="language-python">import sys
+import os
+import pandas as pd
+import requests
+
+def buscar_videos_youtube():
+    YOUTUBE_API_KEY = 'CHAVE_API_OCULTA' # A chave de autenticação fica protegida no ambiente do backend
+    url = 'https://www.googleapis.com/youtube/v3/videos'
+
+    categorias = {
+        'Música': '10',
+        'Games': '20',
+        'Ciência e Tecnologia': '28',
+        'Esportes': '17'
+    }
+    
+    all_video_data = []
+
+    for nome_categoria, id_categoria in categorias.items():
+        payload = {
+            'part': 'snippet,statistics',
+            'chart': 'mostPopular',
+            'videoCategoryId': id_categoria,
+            'regionCode': 'BR',  
+            'maxResults': 5,     
+            'key': YOUTUBE_API_KEY
+        }
+        
+        response = requests.get(url, params=payload)
+        if response.status_code == 200:
+            data = response.json()
+            items = data.get('items', [])
+            
+            for item in items:
+                snippet = item.get('snippet', {})
+                statistics = item.get('statistics', {})
+                video_id = item.get('id', '')
+                
+                all_video_data.append({
+                    'Categoria': nome_categoria,
+                    'Título do Vídeo': snippet.get('title', ''),
+                    'Canal': snippet.get('channelTitle', ''),
+                    'Visualizações': int(statistics.get('viewCount', 0)),
+                    'Likes': int(statistics.get('likeCount', 0)),
+                    'Link': f'https://www.youtube.com/watch?v={video_id}'
+                })
+
+    if all_video_data:
+        df = pd.DataFrame(all_video_data)
+        df = df.sort_values(by='Visualizações', ascending=False)
+        
+        os.makedirs("static", exist_ok=True)
+        caminho_arquivo = "static/api_youtube_resultado.xlsx"
+        df.to_excel(caminho_arquivo, index=False, engine="openpyxl")
+
+if __name__ == "__main__":
+    tipo = sys.argv[1] if len(sys.argv) > 1 else ""
+    if tipo == "api_youtube":
+        buscar_videos_youtube()
+            </code></pre>
+            <button class="btn btn-primary btn-execute" onclick="executarCodigo('api_youtube')">
+                <i class="fas fa-play"></i> Executar Código
+            </button>
+        </div>
+
+        <div class="mb-5">
+            <h3 class="code-title">2. Web Scrapping do ecommerce ibyte para obtenção de preços, descontos e nome do produto, salvo em Excel.</h3>
+            <pre class="code-box"><code class="language-python">url = "https://www.ibyte.com.br/pcs-e-notebooks/computador"
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+}
+             
+response = requests.get(url, headers=headers)  
+if response.status_code == 200:
+    soup = BeautifulSoup(response.text, "html.parser")
+    produtos = []
+    
+    for produto in soup.find_all("div", class_="flex flex-row min-h-full relative w-full overflow-hidden bg-white shadow rounded transition-shadow h-full md:flex-col hover:shadow-md"):
+        try:       
+            nome = produto.find("h2", class_="text-gray-800").text.strip()          
+            preco = produto.find("span", class_="text-verde-500 js-best-price").text.strip()
+    
+            desconto = produto.find("p", class_="flex flag js-discount-flag")
+            desconto = desconto.text.strip() if desconto else "Sem desconto importante"
+            produtos.append({"Nome": nome, "Preço": preco, "Desconto": desconto})
+    
+        except AttributeError:
+            continue
+
+    df = pd.DataFrame(produtos)
+    excel_file = os.path.join(TEMP_FOLDER, "Web_Scrapping_resultado.xlsx")
+    df.to_excel(excel_file, index=False, engine="openpyxl")</code></pre>
+            <button class="btn btn-primary btn-execute" onclick="executarCodigo('Web_Scrapping_')">
+                <i class="fas fa-play"></i> Executar Código
+            </button>
+        </div>
+    </div>
+    
+    <footer class="text-center py-4 bg-dark text-white">
+        <p style="margin-top: 10px;">© 2025 Vinícius Rueda Lopes - Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+function executarCodigo(tipo) {
+
+    fetch('https://web-production-f2068.up.railway.app/executar_codigo?tipo=' + encodeURIComponent(tipo))
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro na resposta do servidor.');
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = tipo + "_resultado.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    })
+    .catch(error => console.error('Erro ao executar código:', error));
+}
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Credenciais GCP
+service-account*.json
+gcp-key*.json
+credentials.json
+*.pem
+
+# Variáveis de ambiente
+.env
+
+# Dependências
+vendor/
+node_modules/
+
+# Outros
+.DS_Store

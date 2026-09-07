@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radar de Preços de Notebooks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --navy:#14213D;
+    --navy-soft:#1E2F52;
+    --bg:#EEF0F3;
+    --panel:#FFFFFF;
+    --line:#E3E6EA;
+    --muted:#6B7280;
+    --ink:#14213D;
+    --accent:#C4622D;
+    --accent-soft:#FBE8DA;
+    --blue:#3A6EA5;
+    --blue-soft:#DDEAF7;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;}
+  a{color:inherit;}
+
+  .layout{display:flex; min-height:100vh;}
+
+  /* ---------------- SIDEBAR ---------------- */
+  .sidebar{
+    width:236px; flex-shrink:0; background:var(--navy); color:#fff;
+    display:flex; flex-direction:column; padding:26px 18px;
+    position:sticky; top:0; height:100vh;
+  }
+  .brand{display:flex; align-items:center; gap:12px; margin-bottom:34px; padding:0 6px;}
+  .brand .mark{
+    width:40px; height:40px; border-radius:10px; background:var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#fff; flex-shrink:0;
+  }
+  .brand .txt h1{font-family:'Space Grotesk',sans-serif; font-size:15px; margin:0; font-weight:600;}
+  .brand .txt span{font-size:11px; color:#9AA6BC;}
+
+  nav.navlist{display:flex; flex-direction:column; gap:4px; flex:1;}
+  nav.navlist a{
+    display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:8px;
+    color:#B9C2D6; text-decoration:none; font-size:13.5px; font-weight:500;
+    transition:background .15s, color .15s;
+  }
+  nav.navlist a i{width:16px; text-align:center; font-size:13px;}
+  nav.navlist a:hover{background:rgba(255,255,255,.06); color:#fff;}
+  nav.navlist a.active{background:var(--accent); color:#fff;}
+
+  .sidebar-foot{border-top:1px solid rgba(255,255,255,.1); padding-top:14px; margin-top:14px;}
+  .sidebar-foot a{
+    display:flex; align-items:center; gap:10px; color:#9AA6BC; text-decoration:none;
+    font-size:12.5px; font-family:'IBM Plex Mono',monospace;
+  }
+  .sidebar-foot a:hover{color:#fff;}
+
+  /* ---------------- MAIN ---------------- */
+  main{flex:1; padding:26px 32px 60px; min-width:0;}
+
+  .topbar{
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;
+    margin-bottom:24px;
+  }
+  .topbar h2{font-family:'Space Grotesk',sans-serif; font-size:22px; margin:0 0 4px;}
+  .topbar p{margin:0; color:var(--muted); font-size:13px; max-width:480px;}
+
+  .filters{display:flex; flex-wrap:wrap; gap:10px;}
+  .filters select, .filters input{
+    font-family:'Inter',sans-serif; font-size:13px; padding:9px 12px;
+    border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink);
+  }
+  .filters select:focus, .filters input:focus{outline:2px solid var(--accent); outline-offset:1px;}
+
+  .tab-section{display:none;}
+  .tab-section.active{display:block;}
+
+  /* ---------------- KPI CARDS ---------------- */
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;}
+  .kpi{
+    background:var(--panel); border-radius:14px; padding:18px 20px;
+    box-shadow:0 1px 2px rgba(20,33,61,.05), 0 8px 20px -12px rgba(20,33,61,.15);
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .kpi.hero{background:var(--navy); color:#fff;}
+  .kpi .icon{
+    width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    background:var(--accent-soft); color:var(--accent); font-size:14px;
+  }
+  .kpi.hero .icon{background:rgba(255,255,255,.12); color:#fff;}
+  .kpi .v{font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:600;}
+  .kpi .l{font-size:12px; color:var(--muted);}
+  .kpi.hero .l{color:#9AA6BC;}
+
+  /* ---------------- GRID DE PAINÉIS ---------------- */
+  .grid-2{display:grid; grid-template-columns:1.6fr 1fr; gap:16px; margin-bottom:16px; align-items:stretch;}
+  .panel{
+    background:var(--panel); border-radius:14px; padding:20px;
+    box-shadow:0 1px 2px rgba(20,33,61,.05), 0 8px 20px -12px rgba(20,33,61,.15);
+    display:flex; flex-direction:column;
+  }
+  .panel-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px;}
+  .panel-head h3{font-family:'Space Grotesk',sans-serif; font-size:15.5px; margin:0;}
+  .panel-head span{font-size:11.5px; color:var(--muted);}
+
+  .donut-wrap{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:10px 0;}
+
+  .chart-tall{position:relative; height:320px;}
+  .donut-canvas-wrap{position:relative; width:230px; height:230px; flex-shrink:0;}
+  .donut-canvas-wrap canvas{width:230px !important; height:230px !important;}
+  .donut-total{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    pointer-events:none;
+  }
+  .donut-total .n{font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; color:var(--ink);}
+  .donut-total .l{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:2px;}
+  .donut-legend{display:flex; flex-wrap:wrap; justify-content:center; gap:8px 10px;}
+  .donut-legend .chip{
+    display:flex; align-items:center; gap:7px; font-size:12.5px; padding:5px 11px 5px 9px;
+    background:#F7F7F6; border-radius:20px;
+  }
+  .donut-legend .chip b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
+  .donut-legend .dot{width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0;}
+
+  /* ---------------- TABELA ---------------- */
+  .table-panel{background:var(--panel); border-radius:14px; box-shadow:0 1px 2px rgba(20,33,61,.05), 0 8px 20px -12px rgba(20,33,61,.15); overflow:hidden;}
+  .table-panel .panel-head{padding:20px 20px 0;}
+  .table-scroll{max-height:520px; overflow-y:auto;}
+  table{width:100%; border-collapse:collapse;}
+  thead{position:sticky; top:0; z-index:1;}
+  thead th{
+    text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--muted); padding:12px 20px; border-bottom:1px solid var(--line); font-weight:600;
+    background:#F7F7F6;
+  }
+  tbody td{padding:9px 20px; font-size:13px; border-bottom:1px solid var(--line);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FAFAFA;}
+  td.preco{font-family:'IBM Plex Mono',monospace;}
+  .desconto-tag{font-family:'IBM Plex Mono',monospace; font-size:11.5px; background:var(--accent-soft); color:var(--accent); padding:2px 8px; border-radius:20px;}
+  .brand-tag{font-size:11.5px; background:var(--blue-soft); color:var(--blue); padding:2px 8px; border-radius:20px;}
+
+  .load-more{
+    display:block; margin:16px auto 20px; font-family:'Inter',sans-serif; font-weight:600; font-size:13px;
+    background:var(--navy); color:#fff; border:none; padding:9px 20px; border-radius:8px; cursor:pointer;
+  }
+  .load-more:hover{background:var(--navy-soft);}
+  .load-more:disabled{opacity:.5; cursor:default;}
+
+  .empty, .loading{padding:24px 20px; color:var(--muted); font-size:13.5px;}
+
+  .ver-todos{color:var(--accent); text-decoration:none; font-size:12px; font-weight:600;}
+  .ver-todos:hover{text-decoration:underline;}
+
+  .buzz-grid{display:grid; grid-template-columns:1fr 1fr; gap:28px;}
+  .buzz-col h4{
+    font-family:'Space Grotesk',sans-serif; font-size:12.5px; margin:0 0 10px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.05em;
+  }
+  .buzz-item{padding:10px 0; border-bottom:1px solid var(--line); font-size:13px;}
+  .buzz-item:last-child{border-bottom:none;}
+  .buzz-item .who{font-weight:600;}
+  .buzz-item .views{font-family:'IBM Plex Mono',monospace; color:var(--accent); font-weight:600;}
+  .buzz-item a{color:var(--blue); text-decoration:none; font-size:12.5px;}
+  .buzz-item a:hover{text-decoration:underline;}
+  @media (max-width:760px){ .buzz-grid{grid-template-columns:1fr;} }
+
+  footer.note{color:var(--muted); font-size:12px; line-height:1.6; margin:22px auto 0; max-width:640px; text-align:center;}
+
+  @media (max-width:980px){
+    .grid-2{grid-template-columns:1fr;}
+    .kpis{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:760px){
+    .sidebar{position:fixed; z-index:40; transform:translateX(-100%); transition:transform .2s; height:100vh;}
+    .sidebar.open{transform:translateX(0);}
+    main{padding:18px;}
+    .kpis{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="mark">VR</div>
+      <div class="txt">
+        <h1>Radar de Preços</h1>
+        <span>Notebooks · Web Scraping</span>
+      </div>
+    </div>
+
+    <nav class="navlist">
+      <a href="#overview" data-tab="overview" class="active"><i class="fa-solid fa-gauge"></i> Visão geral</a>
+      <a href="#ranking" data-tab="ranking"><i class="fa-solid fa-ranking-star"></i> Ranking de marcas</a>
+      <a href="#evolucao" data-tab="evolucao"><i class="fa-solid fa-chart-line"></i> Evolução de preço</a>
+      <a href="#anuncios" data-tab="anuncios"><i class="fa-solid fa-table-list"></i> Anúncios coletados</a>
+      <a href="#social" data-tab="social"><i class="fa-solid fa-hashtag"></i> Presença social</a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <a href="/dashboard"><i class="fa-solid fa-arrow-left"></i> Meus dashboards</a>
+    </div>
+  </aside>
+
+  <main id="overview">
+
+    <div class="topbar">
+      <div>
+        <h2>Concorrência de preços de Notebooks</h2>
+        <p>Coleta via web scraping (e-commerce próprio, marketplaces e redes sociais), agregada em MySQL e servida por uma API própria em PHP.</p>
+      </div>
+      <div class="filters">
+        <select id="fMarca"><option value="todas">Todas as marcas</option></select>
+        <input type="text" id="fTermo" placeholder="Buscar computador...">
+        <input type="date" id="fDe">
+        <input type="date" id="fAte">
+      </div>
+    </div>
+    <div id="periodoHint" style="text-align:right; font-size:11px; color:var(--muted); margin:-14px 0 18px;"></div>
+
+    <div class="tab-section active" id="tab-overview">
+      <div class="kpis">
+        <div class="kpi hero">
+          <div class="icon"><i class="fa-solid fa-tag"></i></div>
+          <div class="v">—</div>
+          <div class="l">Menor preço encontrado</div>
+        </div>
+        <div class="kpi">
+          <div class="icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+          <div class="v">—</div>
+          <div class="l">Maior preço encontrado</div>
+        </div>
+        <div class="kpi">
+          <div class="icon"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div class="v">—</div>
+          <div class="l">Preço médio geral</div>
+        </div>
+        <div class="kpi">
+          <div class="icon"><i class="fa-solid fa-percent"></i></div>
+          <div class="v">—</div>
+          <div class="l">Maior desconto médio</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Preço médio por marca</h3>
+            <span>Ordenado do mais caro ao mais barato</span>
+          </div>
+          <canvas id="ov-barChart" height="220"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Participação de anúncios</h3>
+            <span>Por marca, no filtro atual</span>
+          </div>
+          <div class="donut-wrap">
+            <div class="donut-canvas-wrap">
+              <canvas id="ov-donutChart" width="230" height="230"></canvas>
+              <div class="donut-total">
+                <div class="n" id="ov-donutTotal">—</div>
+                <div class="l">anúncios</div>
+              </div>
+            </div>
+            <div class="donut-legend" id="ov-donutLegend"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:16px;">
+        <div class="panel-head">
+          <h3>Evolução do preço médio</h3>
+          <span>Por dia de coleta</span>
+        </div>
+        <div class="chart-tall" style="height:260px;">
+          <canvas id="ov-evolucaoChart"></canvas>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Preço x engajamento por marca</h3>
+            <span>Bolha = nº de posts no Instagram</span>
+          </div>
+          <div class="chart-tall" style="height:260px;">
+            <canvas id="ov-scatterChart"></canvas>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Seguidores atuais</h3>
+            <span>Instagram, por marca</span>
+          </div>
+          <canvas id="ov-seguidoresChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="table-panel" style="margin-bottom:16px;">
+        <div class="panel-head">
+          <h3>Anúncios coletados</h3>
+          <span><a href="#anuncios" data-tab="anuncios" class="ver-todos">ver tabela completa →</a></span>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Computador</th><th>Marca</th><th>Preço</th><th>Desconto</th><th>Data</th></tr>
+          </thead>
+          <tbody id="ov-tabelaPreview">
+            <tr><td colspan="5" class="loading">Carregando anúncios...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-section" id="tab-ranking">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Preço médio por marca</h3>
+            <span>Ordenado do mais caro ao mais barato</span>
+          </div>
+          <canvas id="barChart" height="220"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Participação de anúncios</h3>
+            <span>Por marca, no filtro atual</span>
+          </div>
+          <div class="donut-wrap">
+            <div class="donut-canvas-wrap">
+              <canvas id="donutChart" width="230" height="230"></canvas>
+              <div class="donut-total">
+                <div class="n" id="donutTotal">—</div>
+                <div class="l">anúncios</div>
+              </div>
+            </div>
+            <div class="donut-legend" id="donutLegend"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-section" id="tab-evolucao">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Evolução do preço médio</h3>
+          <span>Por dia de coleta</span>
+        </div>
+        <div class="chart-tall">
+          <canvas id="evolucaoChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-section" id="tab-anuncios">
+      <div class="table-panel">
+        <div class="panel-head">
+          <h3>Anúncios coletados</h3>
+          <span id="tabelaHint">&nbsp;</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Computador</th><th>Marca</th><th>Preço</th><th>Desconto</th><th>Data</th></tr>
+            </thead>
+            <tbody id="tabelaBody">
+              <tr><td colspan="5" class="loading">Carregando anúncios...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="load-more" id="btnMais">Carregar mais</button>
+      </div>
+    </div>
+
+    <div class="tab-section" id="tab-social">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Preço x engajamento por marca</h3>
+            <span>Bolha = nº de posts no Instagram</span>
+          </div>
+          <div class="chart-tall" style="height:320px;">
+            <canvas id="scatterChart"></canvas>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Seguidores atuais</h3>
+            <span>Instagram, por marca</span>
+          </div>
+          <canvas id="seguidoresChart" height="260"></canvas>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head">
+          <h3>Posts em destaque</h3>
+          <span>Mais vistos no período coletado, mercado geral</span>
+        </div>
+        <div class="buzz-grid" id="buzzGrid">
+          <div class="loading">Carregando...</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="note">
+      <b>Pipeline:</b> coleta via web scraping em Python (e-commerce próprio, marketplaces, TikTok, YouTube,
+      Instagram e Google) → carga em MySQL → agregações via SQL expostas por endpoints PHP → consumo direto
+      pelo navegador via fetch. Base estática, coletada em 2024.
+    </footer>
+
+  </main>
+</div>
+
+<script>
+const API = './api/';
+const fmtMoeda = v => v == null ? '—' : v.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+const fmtPct   = v => v == null ? '—' : (v * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%';
+const PALETTE = ['#C4622D', '#14213D', '#3A6EA5', '#D9A441', '#7A8CA3', '#8F5A3C'];
+
+// Fallback local — usado se a API ainda não estiver configurada
+const SAMPLE_RANKING = [
+  { marca:'Avell',   preco_minimo:2799.89, preco_maximo:28799.90, preco_medio:9280.16, desconto_medio:0.15, total_anuncios:1450 },
+  { marca:'Asus',    preco_minimo:1259.10, preco_maximo:33299.10, preco_medio:7518.77, desconto_medio:0.22, total_anuncios:6200 },
+  { marca:'Samsung', preco_minimo:1439.10, preco_maximo:18899.10, preco_medio:6699.47, desconto_medio:0.18, total_anuncios:3100 },
+  { marca:'Acer',    preco_minimo:279.00,  preco_maximo:23999.00, preco_medio:6546.58, desconto_medio:0.12, total_anuncios:8900 },
+  { marca:'Dell',    preco_minimo:2148.00, preco_maximo:26999.00, preco_medio:6034.60, desconto_medio:0.10, total_anuncios:4300 },
+  { marca:'HP',      preco_minimo:1880.05, preco_maximo:14762.05, preco_medio:5210.96, desconto_medio:0.19, total_anuncios:5100 },
+];
+
+let filtrosState = { marca:'todas', termo:'', de:'', ate:'' };
+let paginaAtual = 1;
+// instâncias de gráfico ficam registradas em chartRegistry (definido mais abaixo)
+
+function querystring() {
+  const p = new URLSearchParams();
+  if (filtrosState.marca && filtrosState.marca !== 'todas') p.set('marca', filtrosState.marca);
+  if (filtrosState.termo) p.set('termo', filtrosState.termo);
+  if (filtrosState.de) p.set('de', filtrosState.de);
+  if (filtrosState.ate) p.set('ate', filtrosState.ate);
+  return p.toString();
+}
+
+async function carregarFiltros() {
+  try {
+    const res = await fetch(API + 'filtros.php');
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const select = document.getElementById('fMarca');
+    data.marcas.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m; opt.textContent = m;
+      select.appendChild(opt);
+    });
+    if (data.periodo?.de && data.periodo?.ate) {
+      document.getElementById('fDe').min = data.periodo.de;
+      document.getElementById('fDe').max = data.periodo.ate;
+      document.getElementById('fAte').min = data.periodo.de;
+      document.getElementById('fAte').max = data.periodo.ate;
+      const fmtData = d => new Date(d + 'T00:00:00').toLocaleDateString('pt-BR');
+      document.getElementById('periodoHint').textContent =
+        `Dados disponíveis: ${fmtData(data.periodo.de)} a ${fmtData(data.periodo.ate)}`;
+    }
+  } catch (e) { /* segue com dados de amostra */ }
+}
+
+function atualizarKpis(rows) {
+  const kpiEls = document.querySelectorAll('.kpis .v');
+  if (!rows.length) { kpiEls.forEach(el => el.textContent = '—'); return; }
+  const min = Math.min(...rows.map(r => Number(r.preco_minimo)));
+  const max = Math.max(...rows.map(r => Number(r.preco_maximo)));
+  const mediaGeral = rows.reduce((s, r) => s + Number(r.preco_medio), 0) / rows.length;
+  const maiorDesconto = rows.reduce((a, b) => Number(b.desconto_medio) > Number(a.desconto_medio) ? b : a);
+  kpiEls[0].textContent = fmtMoeda(min);
+  kpiEls[1].textContent = fmtMoeda(max);
+  kpiEls[2].textContent = fmtMoeda(mediaGeral);
+  kpiEls[3].textContent = `${fmtPct(Number(maiorDesconto.desconto_medio))}`;
+}
+
+const chartRegistry = {};
+function destroyAndCreate(key, canvasId, config) {
+  if (!document.getElementById(canvasId)) return null;
+  if (chartRegistry[key]) chartRegistry[key].destroy();
+  chartRegistry[key] = new Chart(document.getElementById(canvasId), config);
+  return chartRegistry[key];
+}
+
+function renderBarChart(rows, canvasId) {
+  destroyAndCreate('bar-' + canvasId, canvasId, {
+    type: 'bar',
+    data: {
+      labels: rows.map(r => r.marca),
+      datasets: [{
+        data: rows.map(r => Number(r.preco_medio)),
+        backgroundColor: rows.map((_, i) => i === 0 ? '#C4622D' : '#14213D'),
+        borderRadius: 6,
+        maxBarThickness: 42,
+      }],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmtMoeda(c.raw) } } },
+      scales: {
+        y: { grid: { color: '#E3E6EA' }, ticks: { callback: v => 'R$ ' + Number(v).toLocaleString('pt-BR', {maximumFractionDigits:0}) } },
+        x: { grid: { display: false } },
+      },
+    },
+  });
+}
+
+function renderDonut(rows, canvasId, totalId, legendId) {
+  const top = [...rows].sort((a, b) => b.total_anuncios - a.total_anuncios).slice(0, 5);
+  const outros = rows.slice(5).reduce((s, r) => s + Number(r.total_anuncios || 0), 0);
+  const labels = top.map(r => r.marca).concat(outros > 0 ? ['Outras'] : []);
+  const data = top.map(r => Number(r.total_anuncios || 0)).concat(outros > 0 ? [outros] : []);
+  const colors = labels.map((_, i) => PALETTE[i % PALETTE.length]);
+
+  destroyAndCreate('donut-' + canvasId, canvasId, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0 }] },
+    options: { responsive: false, cutout: '72%', plugins: { legend: { display: false } } },
+  });
+
+  const total = data.reduce((a, b) => a + b, 0);
+  const totalEl = document.getElementById(totalId);
+  const legendEl = document.getElementById(legendId);
+  if (totalEl) totalEl.textContent = total.toLocaleString('pt-BR');
+  if (legendEl) legendEl.innerHTML = labels.map((l, i) => `
+    <span class="chip"><span class="dot" style="background:${colors[i]}"></span>${l} <b>${(total ? data[i] / total * 100 : 0).toFixed(0)}%</b></span>
+  `).join('');
+}
+
+async function carregarRanking() {
+  let rows;
+  try {
+    const res = await fetch(API + 'ranking_marcas.php?' + querystring());
+    if (!res.ok) throw new Error();
+    rows = await res.json();
+    if (rows.error) throw new Error();
+  } catch (e) {
+    rows = SAMPLE_RANKING;
+  }
+  renderBarChart(rows, 'barChart');
+  renderBarChart(rows, 'ov-barChart');
+  renderDonut(rows, 'donutChart', 'donutTotal', 'donutLegend');
+  renderDonut(rows, 'ov-donutChart', 'ov-donutTotal', 'ov-donutLegend');
+  atualizarKpis(rows);
+  window.__rankingCache = rows;
+  carregarSocial();
+}
+
+async function carregarEvolucao() {
+  let rows = [];
+  try {
+    const res = await fetch(API + 'evolucao_precos.php?' + querystring());
+    if (!res.ok) throw new Error();
+    rows = await res.json();
+    if (rows.error) throw new Error();
+  } catch (e) { rows = []; }
+
+  const dias = rows.map(r => r.dia);
+  const medias = rows.map(r => Number(r.preco_medio));
+  const config = {
+    type: 'line',
+    data: {
+      labels: dias,
+      datasets: [{
+        label: 'Preço médio', data: medias, borderColor: '#C4622D',
+        backgroundColor: 'rgba(196,98,45,.08)', fill: true, tension: .25, pointRadius: 0,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => 'R$ ' + c.raw.toLocaleString('pt-BR', {maximumFractionDigits:0}) } },
+      },
+      scales: {
+        y: {
+          grid: { color: '#E3E6EA' },
+          ticks: { callback: v => 'R$ ' + Number(v).toLocaleString('pt-BR') },
+        },
+        x: { grid: { display: false }, ticks: { maxTicksLimit: 12 } },
+      },
+    },
+  };
+  destroyAndCreate('evolucao-evolucaoChart', 'evolucaoChart', config);
+  destroyAndCreate('evolucao-ov-evolucaoChart', 'ov-evolucaoChart', config);
+}
+
+async function carregarSocial() {
+  let social = [];
+  try {
+    const res = await fetch(API + 'social_marcas.php');
+    if (!res.ok) throw new Error();
+    social = await res.json();
+    if (social.error) throw new Error();
+  } catch (e) { social = []; }
+
+  const precoPorMarca = {};
+  (window.__rankingCache || []).forEach(r => { precoPorMarca[r.marca] = Number(r.preco_medio); });
+
+  const comPreco = social.filter(s => precoPorMarca[s.marca] != null);
+  const postsVals = comPreco.map(s => Number(s.total_posts) || 0);
+  const minPosts = Math.min(...postsVals, 0);
+  const maxPosts = Math.max(...postsVals, 1);
+
+  const scatterData = comPreco.map((s, i) => ({
+    x: precoPorMarca[s.marca],
+    y: Number(s.engajamento_medio),
+    r: 7 + (maxPosts > minPosts ? (Number(s.total_posts || 0) - minPosts) / (maxPosts - minPosts) : 0.5) * 22,
+    marca: s.marca,
+    cor: PALETTE[i % PALETTE.length],
+  }));
+
+  const scatterConfig = {
+    type: 'bubble',
+    data: {
+      datasets: [{
+        data: scatterData,
+        backgroundColor: scatterData.map(d => d.cor + 'B0'),
+        borderColor: scatterData.map(d => d.cor),
+        borderWidth: 1.5,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: c => `${c.raw.marca}: R$ ${c.raw.x.toLocaleString('pt-BR', {maximumFractionDigits:0})} · engajamento ${c.raw.y.toFixed(4)}`,
+          },
+        },
+      },
+      scales: {
+        x: { title: { display: true, text: 'Preço médio (R$)' }, grid: { color: '#E3E6EA' } },
+        y: { title: { display: true, text: 'Engajamento médio' }, grid: { color: '#E3E6EA' } },
+      },
+    },
+  };
+  destroyAndCreate('scatter-scatterChart', 'scatterChart', scatterConfig);
+  destroyAndCreate('scatter-ov-scatterChart', 'ov-scatterChart', scatterConfig);
+
+  const seguidoresData = social
+    .filter(s => s.seguidores != null)
+    .sort((a, b) => b.seguidores - a.seguidores);
+
+  const seguidoresConfig = {
+    type: 'bar',
+    data: {
+      labels: seguidoresData.map(s => s.marca),
+      datasets: [{ data: seguidoresData.map(s => s.seguidores), backgroundColor: '#14213D', borderRadius: 6, maxBarThickness: 36 }],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => c.raw.toLocaleString('pt-BR') + ' seguidores' } },
+      },
+      scales: {
+        y: { grid: { color: '#E3E6EA' }, ticks: { callback: v => Number(v).toLocaleString('pt-BR') } },
+        x: { grid: { display: false } },
+      },
+    },
+  };
+  destroyAndCreate('seguidores-seguidoresChart', 'seguidoresChart', seguidoresConfig);
+  destroyAndCreate('seguidores-ov-seguidoresChart', 'ov-seguidoresChart', seguidoresConfig);
+}
+
+async function carregarBuzz() {
+  let data;
+  try {
+    const res = await fetch(API + 'buzz_top.php');
+    if (!res.ok) throw new Error();
+    data = await res.json();
+    if (data.error) throw new Error();
+  } catch (e) {
+    ['buzzGrid'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '<div class="empty">API ainda não configurada — configure o banco pra ver os posts reais.</div>';
+    });
+    return;
+  }
+
+  const item = (p, tipo) => `
+    <div class="buzz-item">
+      <div><span class="who">${p.nome_usuario}</span> — <span class="views">${Number(p.total_visualizacoes).toLocaleString('pt-BR')} views</span></div>
+      <a href="${p.link_post}" target="_blank" rel="noopener">Ver ${tipo} ↗</a>
+    </div>`;
+
+  const html = `
+    <div class="buzz-col">
+      <h4>TikTok</h4>
+      ${data.tiktok.map(p => item(p, 'post')).join('') || '<div class="empty">Sem dados.</div>'}
+    </div>
+    <div class="buzz-col">
+      <h4>YouTube</h4>
+      ${data.youtube.map(p => item(p, 'vídeo')).join('') || '<div class="empty">Sem dados.</div>'}
+    </div>
+  `;
+  const el = document.getElementById('buzzGrid');
+  if (el) el.innerHTML = html;
+}
+
+function renderTabela(rows, append) {
+  const body = document.getElementById('tabelaBody');
+  if (!append) body.innerHTML = '';
+  if (!rows.length && !append) {
+    body.innerHTML = '<tr><td colspan="5" class="empty">Nenhum anúncio encontrado para esse filtro.</td></tr>';
+    document.getElementById('btnMais').disabled = true;
+    return;
+  }
+  body.insertAdjacentHTML('beforeend', rows.map(r => `
+    <tr>
+      <td>${r.nome_computador}</td>
+      <td><span class="brand-tag">${r.marca}</span></td>
+      <td class="preco">${fmtMoeda(Number(r.preco))}</td>
+      <td>${r.desconto ? `<span class="desconto-tag">${fmtPct(Number(r.desconto))}</span>` : '—'}</td>
+      <td>${r.dia}</td>
+    </tr>
+  `).join(''));
+  document.getElementById('btnMais').disabled = rows.length < 50;
+}
+
+async function carregarProdutos(append = false) {
+  const btn = document.getElementById('btnMais');
+  btn.textContent = 'Carregando...';
+  btn.disabled = true;
+  try {
+    const res = await fetch(API + `produtos.php?${querystring()}&pagina=${paginaAtual}`);
+    if (!res.ok) throw new Error();
+    const rows = await res.json();
+    if (rows.error) throw new Error();
+    renderTabela(rows, append);
+    if (!append) renderTabelaPreview(rows.slice(0, 10));
+  } catch (e) {
+    if (!append) {
+      document.getElementById('tabelaBody').innerHTML =
+        '<tr><td colspan="5" class="empty">API ainda não configurada — configure o banco pra ver os anúncios reais.</td></tr>';
+      renderTabelaPreview([]);
+    }
+  }
+  btn.textContent = 'Carregar mais';
+}
+
+function renderTabelaPreview(rows) {
+  const body = document.getElementById('ov-tabelaPreview');
+  if (!body) return;
+  if (!rows.length) {
+    body.innerHTML = '<tr><td colspan="5" class="empty">Nenhum anúncio encontrado para esse filtro.</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.nome_computador}</td>
+      <td><span class="brand-tag">${r.marca}</span></td>
+      <td class="preco">${fmtMoeda(Number(r.preco))}</td>
+      <td>${r.desconto ? `<span class="desconto-tag">${fmtPct(Number(r.desconto))}</span>` : '—'}</td>
+      <td>${r.dia}</td>
+    </tr>
+  `).join('');
+}
+
+function recarregarTudo() {
+  paginaAtual = 1;
+  carregarRanking();
+  carregarEvolucao();
+  carregarProdutos(false);
+}
+
+document.getElementById('fMarca').addEventListener('change', e => { filtrosState.marca = e.target.value; recarregarTudo(); });
+let termoTimeout;
+document.getElementById('fTermo').addEventListener('input', e => {
+  clearTimeout(termoTimeout);
+  termoTimeout = setTimeout(() => { filtrosState.termo = e.target.value; recarregarTudo(); }, 350);
+});
+document.getElementById('fDe').addEventListener('change', e => { filtrosState.de = e.target.value; recarregarTudo(); });
+document.getElementById('fAte').addEventListener('change', e => { filtrosState.ate = e.target.value; recarregarTudo(); });
+document.getElementById('btnMais').addEventListener('click', () => { paginaAtual += 1; carregarProdutos(true); });
+
+const TABS = ['overview', 'ranking', 'evolucao', 'anuncios', 'social'];
+
+function showTab(tabId) {
+  if (!TABS.includes(tabId)) tabId = 'overview';
+  TABS.forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tabId);
+  });
+  document.querySelectorAll('[data-tab]').forEach(a => {
+    a.classList.toggle('active', a.dataset.tab === tabId);
+  });
+  // Chart.js precisa de um resize explícito ao reaparecer de um container que estava com display:none
+  requestAnimationFrame(() => {
+    Object.values(chartRegistry).forEach(c => c && c.resize && c.resize());
+  });
+}
+
+document.querySelectorAll('[data-tab]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    showTab(a.dataset.tab);
+    history.replaceState(null, '', '#' + a.dataset.tab);
+  });
+});
+
+showTab((location.hash || '#overview').replace('#', ''));
+
+carregarFiltros();
+recarregarTudo();
+carregarBuzz();
+</script>
+
+</body>
+</html>
