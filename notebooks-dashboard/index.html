@@ -17,17 +17,15 @@
     --line:#E3E6EA;
     --muted:#6B7280;
     --ink:#14213D;
-    --accent:#C4622D;
-    --accent-soft:#FBE8DA;
+    --accent:#2F5F63;
+    --accent-soft:#DDEBEA;
     --blue:#3A6EA5;
     --blue-soft:#DDEAF7;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;}
   a{color:inherit;}
-
   .layout{display:flex; min-height:100vh;}
-
   /* ---------------- SIDEBAR ---------------- */
   .sidebar{
     width:236px; flex-shrink:0; background:var(--navy); color:#fff;
@@ -42,7 +40,6 @@
   }
   .brand .txt h1{font-family:'Space Grotesk',sans-serif; font-size:15px; margin:0; font-weight:600;}
   .brand .txt span{font-size:11px; color:#9AA6BC;}
-
   nav.navlist{display:flex; flex-direction:column; gap:4px; flex:1;}
   nav.navlist a{
     display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:8px;
@@ -52,34 +49,28 @@
   nav.navlist a i{width:16px; text-align:center; font-size:13px;}
   nav.navlist a:hover{background:rgba(255,255,255,.06); color:#fff;}
   nav.navlist a.active{background:var(--accent); color:#fff;}
-
   .sidebar-foot{border-top:1px solid rgba(255,255,255,.1); padding-top:14px; margin-top:14px;}
   .sidebar-foot a{
     display:flex; align-items:center; gap:10px; color:#9AA6BC; text-decoration:none;
     font-size:12.5px; font-family:'IBM Plex Mono',monospace;
   }
   .sidebar-foot a:hover{color:#fff;}
-
   /* ---------------- MAIN ---------------- */
   main{flex:1; padding:26px 32px 60px; min-width:0;}
-
   .topbar{
     display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px;
     margin-bottom:24px;
   }
   .topbar h2{font-family:'Space Grotesk',sans-serif; font-size:22px; margin:0 0 4px;}
   .topbar p{margin:0; color:var(--muted); font-size:13px; max-width:480px;}
-
   .filters{display:flex; flex-wrap:wrap; gap:10px;}
   .filters select, .filters input{
     font-family:'Inter',sans-serif; font-size:13px; padding:9px 12px;
     border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink);
   }
   .filters select:focus, .filters input:focus{outline:2px solid var(--accent); outline-offset:1px;}
-
   .tab-section{display:none;}
   .tab-section.active{display:block;}
-
   /* ---------------- KPI CARDS ---------------- */
   .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;}
   .kpi{
@@ -96,7 +87,6 @@
   .kpi .v{font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:600;}
   .kpi .l{font-size:12px; color:var(--muted);}
   .kpi.hero .l{color:#9AA6BC;}
-
   /* ---------------- GRID DE PAINÉIS ---------------- */
   .grid-2{display:grid; grid-template-columns:1.6fr 1fr; gap:16px; margin-bottom:16px; align-items:stretch;}
   .panel{
@@ -107,9 +97,7 @@
   .panel-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px;}
   .panel-head h3{font-family:'Space Grotesk',sans-serif; font-size:15.5px; margin:0;}
   .panel-head span{font-size:11.5px; color:var(--muted);}
-
   .donut-wrap{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; padding:10px 0;}
-
   .chart-tall{position:relative; height:320px;}
   .donut-canvas-wrap{position:relative; width:230px; height:230px; flex-shrink:0;}
   .donut-canvas-wrap canvas{width:230px !important; height:230px !important;}
@@ -126,7 +114,6 @@
   }
   .donut-legend .chip b{font-family:'IBM Plex Mono',monospace; font-weight:600;}
   .donut-legend .dot{width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0;}
-
   /* ---------------- TABELA ---------------- */
   .table-panel{background:var(--panel); border-radius:14px; box-shadow:0 1px 2px rgba(20,33,61,.05), 0 8px 20px -12px rgba(20,33,61,.15); overflow:hidden;}
   .table-panel .panel-head{padding:20px 20px 0;}
@@ -144,19 +131,15 @@
   td.preco{font-family:'IBM Plex Mono',monospace;}
   .desconto-tag{font-family:'IBM Plex Mono',monospace; font-size:11.5px; background:var(--accent-soft); color:var(--accent); padding:2px 8px; border-radius:20px;}
   .brand-tag{font-size:11.5px; background:var(--blue-soft); color:var(--blue); padding:2px 8px; border-radius:20px;}
-
   .load-more{
     display:block; margin:16px auto 20px; font-family:'Inter',sans-serif; font-weight:600; font-size:13px;
     background:var(--navy); color:#fff; border:none; padding:9px 20px; border-radius:8px; cursor:pointer;
   }
   .load-more:hover{background:var(--navy-soft);}
   .load-more:disabled{opacity:.5; cursor:default;}
-
   .empty, .loading{padding:24px 20px; color:var(--muted); font-size:13.5px;}
-
   .ver-todos{color:var(--accent); text-decoration:none; font-size:12px; font-weight:600;}
   .ver-todos:hover{text-decoration:underline;}
-
   .buzz-grid{display:grid; grid-template-columns:1fr 1fr; gap:28px;}
   .buzz-col h4{
     font-family:'Space Grotesk',sans-serif; font-size:12.5px; margin:0 0 10px; color:var(--muted);
@@ -169,9 +152,7 @@
   .buzz-item a{color:var(--blue); text-decoration:none; font-size:12.5px;}
   .buzz-item a:hover{text-decoration:underline;}
   @media (max-width:760px){ .buzz-grid{grid-template-columns:1fr;} }
-
   footer.note{color:var(--muted); font-size:12px; line-height:1.6; margin:22px auto 0; max-width:640px; text-align:center;}
-
   @media (max-width:980px){
     .grid-2{grid-template-columns:1fr;}
     .kpis{grid-template-columns:repeat(2,1fr);}
@@ -185,9 +166,7 @@
 </style>
 </head>
 <body>
-
 <div class="layout">
-
   <aside class="sidebar" id="sidebar">
     <div class="brand">
       <div class="mark">VR</div>
@@ -196,7 +175,6 @@
         <span>Notebooks · Web Scraping</span>
       </div>
     </div>
-
     <nav class="navlist">
       <a href="#overview" data-tab="overview" class="active"><i class="fa-solid fa-gauge"></i> Visão geral</a>
       <a href="#ranking" data-tab="ranking"><i class="fa-solid fa-ranking-star"></i> Ranking de marcas</a>
@@ -204,14 +182,11 @@
       <a href="#anuncios" data-tab="anuncios"><i class="fa-solid fa-table-list"></i> Anúncios coletados</a>
       <a href="#social" data-tab="social"><i class="fa-solid fa-hashtag"></i> Presença social</a>
     </nav>
-
     <div class="sidebar-foot">
       <a href="/dashboard"><i class="fa-solid fa-arrow-left"></i> Meus dashboards</a>
     </div>
   </aside>
-
   <main id="overview">
-
     <div class="topbar">
       <div>
         <h2>Concorrência de preços de Notebooks</h2>
@@ -225,7 +200,6 @@
       </div>
     </div>
     <div id="periodoHint" style="text-align:right; font-size:11px; color:var(--muted); margin:-14px 0 18px;"></div>
-
     <div class="tab-section active" id="tab-overview">
       <div class="kpis">
         <div class="kpi hero">
@@ -249,7 +223,6 @@
           <div class="l">Maior desconto médio</div>
         </div>
       </div>
-
       <div class="grid-2">
         <div class="panel">
           <div class="panel-head">
@@ -275,7 +248,6 @@
           </div>
         </div>
       </div>
-
       <div class="panel" style="margin-bottom:16px;">
         <div class="panel-head">
           <h3>Evolução do preço médio</h3>
@@ -285,7 +257,6 @@
           <canvas id="ov-evolucaoChart"></canvas>
         </div>
       </div>
-
       <div class="grid-2">
         <div class="panel">
           <div class="panel-head">
@@ -304,7 +275,6 @@
           <canvas id="ov-seguidoresChart" height="220"></canvas>
         </div>
       </div>
-
       <div class="table-panel" style="margin-bottom:16px;">
         <div class="panel-head">
           <h3>Anúncios coletados</h3>
@@ -320,7 +290,6 @@
         </table>
       </div>
     </div>
-
     <div class="tab-section" id="tab-ranking">
       <div class="grid-2">
         <div class="panel">
@@ -348,7 +317,6 @@
         </div>
       </div>
     </div>
-
     <div class="tab-section" id="tab-evolucao">
       <div class="panel">
         <div class="panel-head">
@@ -360,7 +328,6 @@
         </div>
       </div>
     </div>
-
     <div class="tab-section" id="tab-anuncios">
       <div class="table-panel">
         <div class="panel-head">
@@ -380,7 +347,6 @@
         <button class="load-more" id="btnMais">Carregar mais</button>
       </div>
     </div>
-
     <div class="tab-section" id="tab-social">
       <div class="grid-2">
         <div class="panel">
@@ -400,7 +366,6 @@
           <canvas id="seguidoresChart" height="260"></canvas>
         </div>
       </div>
-
       <div class="panel" style="margin-top:16px;">
         <div class="panel-head">
           <h3>Posts em destaque</h3>
@@ -411,22 +376,18 @@
         </div>
       </div>
     </div>
-
     <footer class="note">
       <b>Pipeline:</b> coleta via web scraping em Python (e-commerce próprio, marketplaces, TikTok, YouTube,
       Instagram e Google) → carga em MySQL → agregações via SQL expostas por endpoints PHP → consumo direto
       pelo navegador via fetch. Base estática, coletada em 2024.
     </footer>
-
   </main>
 </div>
-
 <script>
 const API = './api/';
 const fmtMoeda = v => v == null ? '—' : v.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
 const fmtPct   = v => v == null ? '—' : (v * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%';
-const PALETTE = ['#C4622D', '#14213D', '#3A6EA5', '#D9A441', '#7A8CA3', '#8F5A3C'];
-
+const PALETTE = ['#2F5F63', '#14213D', '#3A6EA5', '#D9A441', '#7FA8A3', '#8F5A3C'];
 // Fallback local — usado se a API ainda não estiver configurada
 const SAMPLE_RANKING = [
   { marca:'Avell',   preco_minimo:2799.89, preco_maximo:28799.90, preco_medio:9280.16, desconto_medio:0.15, total_anuncios:1450 },
@@ -436,11 +397,9 @@ const SAMPLE_RANKING = [
   { marca:'Dell',    preco_minimo:2148.00, preco_maximo:26999.00, preco_medio:6034.60, desconto_medio:0.10, total_anuncios:4300 },
   { marca:'HP',      preco_minimo:1880.05, preco_maximo:14762.05, preco_medio:5210.96, desconto_medio:0.19, total_anuncios:5100 },
 ];
-
 let filtrosState = { marca:'todas', termo:'', de:'', ate:'' };
 let paginaAtual = 1;
 // instâncias de gráfico ficam registradas em chartRegistry (definido mais abaixo)
-
 function querystring() {
   const p = new URLSearchParams();
   if (filtrosState.marca && filtrosState.marca !== 'todas') p.set('marca', filtrosState.marca);
@@ -449,7 +408,6 @@ function querystring() {
   if (filtrosState.ate) p.set('ate', filtrosState.ate);
   return p.toString();
 }
-
 async function carregarFiltros() {
   try {
     const res = await fetch(API + 'filtros.php');
@@ -472,7 +430,6 @@ async function carregarFiltros() {
     }
   } catch (e) { /* segue com dados de amostra */ }
 }
-
 function atualizarKpis(rows) {
   const kpiEls = document.querySelectorAll('.kpis .v');
   if (!rows.length) { kpiEls.forEach(el => el.textContent = '—'); return; }
@@ -485,7 +442,6 @@ function atualizarKpis(rows) {
   kpiEls[2].textContent = fmtMoeda(mediaGeral);
   kpiEls[3].textContent = `${fmtPct(Number(maiorDesconto.desconto_medio))}`;
 }
-
 const chartRegistry = {};
 function destroyAndCreate(key, canvasId, config) {
   if (!document.getElementById(canvasId)) return null;
@@ -493,7 +449,6 @@ function destroyAndCreate(key, canvasId, config) {
   chartRegistry[key] = new Chart(document.getElementById(canvasId), config);
   return chartRegistry[key];
 }
-
 function renderBarChart(rows, canvasId) {
   destroyAndCreate('bar-' + canvasId, canvasId, {
     type: 'bar',
@@ -501,7 +456,7 @@ function renderBarChart(rows, canvasId) {
       labels: rows.map(r => r.marca),
       datasets: [{
         data: rows.map(r => Number(r.preco_medio)),
-        backgroundColor: rows.map((_, i) => i === 0 ? '#C4622D' : '#14213D'),
+        backgroundColor: rows.map((_, i) => i === 0 ? '#2F5F63' : '#14213D'),
         borderRadius: 6,
         maxBarThickness: 42,
       }],
@@ -516,20 +471,17 @@ function renderBarChart(rows, canvasId) {
     },
   });
 }
-
 function renderDonut(rows, canvasId, totalId, legendId) {
   const top = [...rows].sort((a, b) => b.total_anuncios - a.total_anuncios).slice(0, 5);
   const outros = rows.slice(5).reduce((s, r) => s + Number(r.total_anuncios || 0), 0);
   const labels = top.map(r => r.marca).concat(outros > 0 ? ['Outras'] : []);
   const data = top.map(r => Number(r.total_anuncios || 0)).concat(outros > 0 ? [outros] : []);
   const colors = labels.map((_, i) => PALETTE[i % PALETTE.length]);
-
   destroyAndCreate('donut-' + canvasId, canvasId, {
     type: 'doughnut',
     data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0 }] },
     options: { responsive: false, cutout: '72%', plugins: { legend: { display: false } } },
   });
-
   const total = data.reduce((a, b) => a + b, 0);
   const totalEl = document.getElementById(totalId);
   const legendEl = document.getElementById(legendId);
@@ -538,7 +490,6 @@ function renderDonut(rows, canvasId, totalId, legendId) {
     <span class="chip"><span class="dot" style="background:${colors[i]}"></span>${l} <b>${(total ? data[i] / total * 100 : 0).toFixed(0)}%</b></span>
   `).join('');
 }
-
 async function carregarRanking() {
   let rows;
   try {
@@ -557,7 +508,6 @@ async function carregarRanking() {
   window.__rankingCache = rows;
   carregarSocial();
 }
-
 async function carregarEvolucao() {
   let rows = [];
   try {
@@ -566,7 +516,6 @@ async function carregarEvolucao() {
     rows = await res.json();
     if (rows.error) throw new Error();
   } catch (e) { rows = []; }
-
   const dias = rows.map(r => r.dia);
   const medias = rows.map(r => Number(r.preco_medio));
   const config = {
@@ -574,8 +523,8 @@ async function carregarEvolucao() {
     data: {
       labels: dias,
       datasets: [{
-        label: 'Preço médio', data: medias, borderColor: '#C4622D',
-        backgroundColor: 'rgba(196,98,45,.08)', fill: true, tension: .25, pointRadius: 0,
+        label: 'Preço médio', data: medias, borderColor: '#2F5F63',
+        backgroundColor: 'rgba(47,95,99,.08)', fill: true, tension: .25, pointRadius: 0,
       }],
     },
     options: {
@@ -597,7 +546,6 @@ async function carregarEvolucao() {
   destroyAndCreate('evolucao-evolucaoChart', 'evolucaoChart', config);
   destroyAndCreate('evolucao-ov-evolucaoChart', 'ov-evolucaoChart', config);
 }
-
 async function carregarSocial() {
   let social = [];
   try {
@@ -606,15 +554,12 @@ async function carregarSocial() {
     social = await res.json();
     if (social.error) throw new Error();
   } catch (e) { social = []; }
-
   const precoPorMarca = {};
   (window.__rankingCache || []).forEach(r => { precoPorMarca[r.marca] = Number(r.preco_medio); });
-
   const comPreco = social.filter(s => precoPorMarca[s.marca] != null);
   const postsVals = comPreco.map(s => Number(s.total_posts) || 0);
   const minPosts = Math.min(...postsVals, 0);
   const maxPosts = Math.max(...postsVals, 1);
-
   const scatterData = comPreco.map((s, i) => ({
     x: precoPorMarca[s.marca],
     y: Number(s.engajamento_medio),
@@ -622,7 +567,6 @@ async function carregarSocial() {
     marca: s.marca,
     cor: PALETTE[i % PALETTE.length],
   }));
-
   const scatterConfig = {
     type: 'bubble',
     data: {
@@ -652,11 +596,9 @@ async function carregarSocial() {
   };
   destroyAndCreate('scatter-scatterChart', 'scatterChart', scatterConfig);
   destroyAndCreate('scatter-ov-scatterChart', 'ov-scatterChart', scatterConfig);
-
   const seguidoresData = social
     .filter(s => s.seguidores != null)
     .sort((a, b) => b.seguidores - a.seguidores);
-
   const seguidoresConfig = {
     type: 'bar',
     data: {
@@ -678,7 +620,6 @@ async function carregarSocial() {
   destroyAndCreate('seguidores-seguidoresChart', 'seguidoresChart', seguidoresConfig);
   destroyAndCreate('seguidores-ov-seguidoresChart', 'ov-seguidoresChart', seguidoresConfig);
 }
-
 async function carregarBuzz() {
   let data;
   try {
@@ -693,93 +634,42 @@ async function carregarBuzz() {
     });
     return;
   }
-
-  const item = (p, tipo) => `
-    <div class="buzz-item">
-      <div><span class="who">${p.nome_usuario}</span> — <span class="views">${Number(p.total_visualizacoes).toLocaleString('pt-BR')} views</span></div>
-      <a href="${p.link_post}" target="_blank" rel="noopener">Ver ${tipo} ↗</a>
-    </div>`;
-
-  const html = `
-    <div class="buzz-col">
-      <h4>TikTok</h4>
-      ${data.tiktok.map(p => item(p, 'post')).join('') || '<div class="empty">Sem dados.</div>'}
-    </div>
-    <div class="buzz-col">
-      <h4>YouTube</h4>
-      ${data.youtube.map(p => item(p, 'vídeo')).join('') || '<div class="empty">Sem dados.</div>'}
-    </div>
-  `;
-  const el = document.getElementById('buzzGrid');
-  if (el) el.innerHTML = html;
 }
-
-function renderTabela(rows, append) {
-  const body = document.getElementById('tabelaBody');
-  if (!append) body.innerHTML = '';
-  if (!rows.length && !append) {
-    body.innerHTML = '<tr><td colspan="5" class="empty">Nenhum anúncio encontrado para esse filtro.</td></tr>';
-    document.getElementById('btnMais').disabled = true;
-    return;
-  }
-  body.insertAdjacentHTML('beforeend', rows.map(r => `
-    <tr>
-      <td>${r.nome_computador}</td>
-      <td><span class="brand-tag">${r.marca}</span></td>
-      <td class="preco">${fmtMoeda(Number(r.preco))}</td>
-      <td>${r.desconto ? `<span class="desconto-tag">${fmtPct(Number(r.desconto))}</span>` : '—'}</td>
-      <td>${r.dia}</td>
-    </tr>
-  `).join(''));
-  document.getElementById('btnMais').disabled = rows.length < 50;
-}
-
-async function carregarProdutos(append = false) {
-  const btn = document.getElementById('btnMais');
-  btn.textContent = 'Carregando...';
-  btn.disabled = true;
+async function carregarProdutos(append) {
   try {
-    const res = await fetch(API + `produtos.php?${querystring()}&pagina=${paginaAtual}`);
+    const res = await fetch(API + 'anuncios.php?' + querystring() + '&pagina=' + paginaAtual);
     if (!res.ok) throw new Error();
-    const rows = await res.json();
-    if (rows.error) throw new Error();
-    renderTabela(rows, append);
-    if (!append) renderTabelaPreview(rows.slice(0, 10));
+    const data = await res.json();
+    const rows = data.itens || data;
+    const bodyIds = append ? ['tabelaBody'] : ['tabelaBody', 'ov-tabelaPreview'];
+    bodyIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const html = rows.map(r => `
+        <tr>
+          <td>${r.nome || r.computador || ''}</td>
+          <td><span class="brand-tag">${r.marca}</span></td>
+          <td class="preco">${fmtMoeda(Number(r.preco))}</td>
+          <td>${r.desconto ? `<span class="desconto-tag">${fmtPct(Number(r.desconto))}</span>` : '—'}</td>
+          <td>${r.dia}</td>
+        </tr>
+      `).join('');
+      if (append && id === 'tabelaBody') { el.insertAdjacentHTML('beforeend', html); }
+      else { el.innerHTML = html || '<tr><td colspan="5" class="empty">Nenhum anúncio encontrado.</td></tr>'; }
+    });
   } catch (e) {
     if (!append) {
-      document.getElementById('tabelaBody').innerHTML =
-        '<tr><td colspan="5" class="empty">API ainda não configurada — configure o banco pra ver os anúncios reais.</td></tr>';
-      renderTabelaPreview([]);
+      const el = document.getElementById('tabelaBody');
+      if (el) el.innerHTML = '<tr><td colspan="5" class="empty">API ainda não configurada.</td></tr>';
     }
   }
-  btn.textContent = 'Carregar mais';
 }
-
-function renderTabelaPreview(rows) {
-  const body = document.getElementById('ov-tabelaPreview');
-  if (!body) return;
-  if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="5" class="empty">Nenhum anúncio encontrado para esse filtro.</td></tr>';
-    return;
-  }
-  body.innerHTML = rows.map(r => `
-    <tr>
-      <td>${r.nome_computador}</td>
-      <td><span class="brand-tag">${r.marca}</span></td>
-      <td class="preco">${fmtMoeda(Number(r.preco))}</td>
-      <td>${r.desconto ? `<span class="desconto-tag">${fmtPct(Number(r.desconto))}</span>` : '—'}</td>
-      <td>${r.dia}</td>
-    </tr>
-  `).join('');
-}
-
 function recarregarTudo() {
   paginaAtual = 1;
   carregarRanking();
   carregarEvolucao();
   carregarProdutos(false);
 }
-
 document.getElementById('fMarca').addEventListener('change', e => { filtrosState.marca = e.target.value; recarregarTudo(); });
 let termoTimeout;
 document.getElementById('fTermo').addEventListener('input', e => {
@@ -789,9 +679,7 @@ document.getElementById('fTermo').addEventListener('input', e => {
 document.getElementById('fDe').addEventListener('change', e => { filtrosState.de = e.target.value; recarregarTudo(); });
 document.getElementById('fAte').addEventListener('change', e => { filtrosState.ate = e.target.value; recarregarTudo(); });
 document.getElementById('btnMais').addEventListener('click', () => { paginaAtual += 1; carregarProdutos(true); });
-
 const TABS = ['overview', 'ranking', 'evolucao', 'anuncios', 'social'];
-
 function showTab(tabId) {
   if (!TABS.includes(tabId)) tabId = 'overview';
   TABS.forEach(t => {
@@ -800,12 +688,10 @@ function showTab(tabId) {
   document.querySelectorAll('[data-tab]').forEach(a => {
     a.classList.toggle('active', a.dataset.tab === tabId);
   });
-  // Chart.js precisa de um resize explícito ao reaparecer de um container que estava com display:none
   requestAnimationFrame(() => {
     Object.values(chartRegistry).forEach(c => c && c.resize && c.resize());
   });
 }
-
 document.querySelectorAll('[data-tab]').forEach(a => {
   a.addEventListener('click', (e) => {
     e.preventDefault();
@@ -813,13 +699,10 @@ document.querySelectorAll('[data-tab]').forEach(a => {
     history.replaceState(null, '', '#' + a.dataset.tab);
   });
 });
-
 showTab((location.hash || '#overview').replace('#', ''));
-
 carregarFiltros();
 recarregarTudo();
 carregarBuzz();
 </script>
-
 </body>
 </html>

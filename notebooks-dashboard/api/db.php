@@ -15,11 +15,11 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: same-origin');
 
-$host = getenv('DB_HOST') ?: 'HOSTAQUI';
-$db   = getenv('DB_NAME') ?: 'MEUBANCOAQUI';
-$user = getenv('DB_USER') ?: 'USUARIOAQUI';
-$pass = getenv('DB_PASSWORD') ?: 'PASSWORDAQUI';
-$port = getenv('DB_PORT') ?: '3306';
+$host = getenv('DB_HOST') ?: 'seuhostaqui';
+$db   = getenv('DB_NAME') ?: 'dbaqui';
+$user = getenv('DB_USER') ?: 'useraqui';
+$pass = getenv('DB_PASSWORD') ?: 'senhaaqui';
+$port = getenv('DB_PORT') ?: 'portaqui';
 
 $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
 

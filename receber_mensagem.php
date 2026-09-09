@@ -6,8 +6,8 @@ use PHPMailer\PHPMailer\Exception;
 // Configurações do SMTP
 $SMTP_SERVER = "smtp.gmail.com";
 $SMTP_PORT = 587;
-$EMAIL_SENDER = "SEU_EMAIL_AQUI@gmail.com";
-$EMAIL_PASSWORD = "SUA_SENHA_DE_APP_AQUI";
+$EMAIL_SENDER = "seuemailaqui"; 
+$EMAIL_PASSWORD = "seupasswordaqui"; 
 
 header('Content-Type: application/json');
 

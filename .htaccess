@@ -14,6 +14,10 @@ RewriteRule ^ - [L]
 RewriteCond %{REQUEST_URI} ^/notebooks-dashboard/
 RewriteRule ^ - [L]
 
+# Não reescrever nada dentro da pasta do painel macro 
+RewriteCond %{REQUEST_URI} ^/painel-macro/
+RewriteRule ^ - [L]
+
 # Redirecionar rotas amigáveis para os arquivos corretos
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
