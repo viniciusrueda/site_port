@@ -388,7 +388,7 @@ const API = './api/';
 const fmtMoeda = v => v == null ? '—' : v.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
 const fmtPct   = v => v == null ? '—' : (v * 100).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%';
 const PALETTE = ['#2F5F63', '#14213D', '#3A6EA5', '#D9A441', '#7FA8A3', '#8F5A3C'];
-// Fallback local — usado se a API ainda não estiver configurada
+
 const SAMPLE_RANKING = [
   { marca:'Avell',   preco_minimo:2799.89, preco_maximo:28799.90, preco_medio:9280.16, desconto_medio:0.15, total_anuncios:1450 },
   { marca:'Asus',    preco_minimo:1259.10, preco_maximo:33299.10, preco_medio:7518.77, desconto_medio:0.22, total_anuncios:6200 },
@@ -634,10 +634,31 @@ async function carregarBuzz() {
     });
     return;
   }
+  const fmtViews = v => Number(v || 0).toLocaleString('pt-BR');
+  const renderItens = (itens, tituloKey) => itens.map(p => `
+    <div class="buzz-item">
+      <div class="who">${p.nome_usuario}</div>
+      <div>${p[tituloKey] || ''}</div>
+      <div class="views">${fmtViews(p.total_visualizacoes)} visualizações</div>
+      <a href="${p.link_post}" target="_blank" rel="noopener">Ver post →</a>
+    </div>
+  `).join('');
+  const el = document.getElementById('buzzGrid');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="buzz-col">
+      <h4>TikTok</h4>
+      ${data.tiktok?.length ? renderItens(data.tiktok, 'descricao_post') : '<div class="empty">Sem posts.</div>'}
+    </div>
+    <div class="buzz-col">
+      <h4>YouTube</h4>
+      ${data.youtube?.length ? renderItens(data.youtube, 'titulo_post') : '<div class="empty">Sem posts.</div>'}
+    </div>
+  `;
 }
 async function carregarProdutos(append) {
   try {
-    const res = await fetch(API + 'anuncios.php?' + querystring() + '&pagina=' + paginaAtual);
+    const res = await fetch(API + 'produtos.php?' + querystring() + '&pagina=' + paginaAtual);
     if (!res.ok) throw new Error();
     const data = await res.json();
     const rows = data.itens || data;
@@ -645,7 +666,8 @@ async function carregarProdutos(append) {
     bodyIds.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      const html = rows.map(r => `
+      const linhas = id === 'ov-tabelaPreview' ? rows.slice(0, 5) : rows;
+      const html = linhas.map(r => `
         <tr>
           <td>${r.nome || r.computador || ''}</td>
           <td><span class="brand-tag">${r.marca}</span></td>
