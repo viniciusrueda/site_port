@@ -669,7 +669,7 @@ async function carregarProdutos(append) {
       const linhas = id === 'ov-tabelaPreview' ? rows.slice(0, 5) : rows;
       const html = linhas.map(r => `
         <tr>
-          <td>${r.nome || r.computador || ''}</td>
+          <td>${r.nome_computador || ''}</td>
           <td><span class="brand-tag">${r.marca}</span></td>
           <td class="preco">${fmtMoeda(Number(r.preco))}</td>
           <td>${r.desconto ? `<span class="desconto-tag">${fmtPct(Number(r.desconto))}</span>` : '—'}</td>

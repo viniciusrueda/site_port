@@ -4,12 +4,21 @@ gcp-key*.json
 credentials.json
 *.pem
 
-# Variáveis de ambiente
+# Credenciais do site (os modelos *.example ficam no repositório)
 .env
+config.local.php
+youtube-analyzer/.htaccess
+notebooks-dashboard/.htaccess
 
-# Dependências
+# Dependências (recriadas com `composer install`)
 vendor/
 node_modules/
+
+# Estado do deploy via FTP
+**/.ftp-deploy-sync-state.json
+
+# Saídas geradas pelos scripts
+static/*.xlsx
 
 # Outros
 .DS_Store

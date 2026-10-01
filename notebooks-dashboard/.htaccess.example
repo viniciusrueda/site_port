@@ -1,0 +1,5 @@
+# Copie para .htaccess no servidor e preencha. O .htaccess real fica fora do git.
+SetEnv DB_HOST "localhost"
+SetEnv DB_NAME "SEU_BANCO"
+SetEnv DB_USER "SEU_USUARIO"
+SetEnv DB_PASSWORD "SUA_SENHA"

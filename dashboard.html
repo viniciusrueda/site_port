@@ -16,12 +16,13 @@
             flex-direction: column;
 
         }
-        .dash-container {
-            
+        .dash-container{
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            margin-top: 30px;
+            max-width: 1200px;
+            margin: 30px auto 0;
+            padding: 0 20px 30px;
         }
         .dash-card {
             background: #f8f9fa;
@@ -207,8 +208,8 @@
         </nav>
     </header>
 <div class="section-main">
-    <h2 class="section-title">Meus Dashboards</h2>
-    <h3 class="section-subtitle">Projetos de Visualização de Dados</h3>
+    <h2 class="section-title">Dashboards & Painéis</h2>
+    <h3 class="section-subtitle">Projetos de Visualização e Análise de Dados</h3>
     <div class="dash-container">
         <div class="dash-card">
             <h4>Radar de Preços de Notebooks</h4>
@@ -229,7 +230,11 @@
             <p>Buscador de faixa salarial por profissão no Brasil, com dados públicos do Novo CAGED, extração via BigQuery, pipeline próprio de tratamento via Python.</p>
             <a href="/painel-salarial/" class="btn-dash" target="_blank">Ver Dashboard</a>
         </div>
-
+        <div class="dash-card">
+            <h4>Leitor de Audiência do YouTube</h4>
+            <p>Análise de vídeos e canais com LLM, com tom dos comentários, comparação entre concorrentes e radar diário de tendências em 10 nichos. YouTube Data API, PHP, MySQL e LLMs gratuitos (Groq e Gemini).</p>
+            <a href="/youtube-analyzer/" class="btn-dash" target="_blank">Ver Dashboard</a>
+        </div>
         <div class="dash-card-soon">
             <i class="fa-solid fa-plus"></i>
             <h4>Em breve</h4>
@@ -240,7 +245,7 @@
     </div>
 </div>
     <footer class="text-center py-4 bg-dark text-white" >
-        <p style="margin-top: 10px;">&copy; 2025 Vinícius Rueda Lopes - Todos os direitos reservados.</p>
+        <p style="margin-top: 10px;">&copy; 2026 Vinícius Rueda Lopes - Todos os direitos reservados.</p>
     </footer>
 
 </body>

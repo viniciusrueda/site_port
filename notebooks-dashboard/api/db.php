@@ -4,9 +4,9 @@
  * Credenciais via variáveis de ambiente (getenv) — nunca hardcoded aqui.
  *
  * Como configurar na Hostinger:
- *   hPanel > Avançado > Editor de PHP (ou .env carregado via phpdotenv, se
- *   você já adotou isso no resto do site) — defina DB_HOST, DB_NAME,
- *   DB_USER, DB_PASSWORD.
+ *   copie notebooks-dashboard/.htaccess.example para .htaccess no servidor
+ *   e preencha DB_HOST, DB_NAME, DB_USER, DB_PASSWORD (o .htaccess real
+ *   fica fora do git).
  *
  * Pra testar local, exporte as variáveis antes de subir o PHP embutido:
  *   export DB_HOST=localhost DB_NAME=notebooks DB_USER=root DB_PASSWORD=...
@@ -15,11 +15,11 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: same-origin');
 
-$host = getenv('DB_HOST') ?: 'seuhostaqui';
-$db   = getenv('DB_NAME') ?: 'dbaqui';
-$user = getenv('DB_USER') ?: 'useraqui';
-$pass = getenv('DB_PASSWORD') ?: 'senhaaqui';
-$port = getenv('DB_PORT') ?: 'portaqui';
+$host = getenv('DB_HOST') ?: 'localhost';
+$db   = getenv('DB_NAME') ?: 'SEU_BANCO';
+$user = getenv('DB_USER') ?: 'SEU_USUARIO';
+$pass = getenv('DB_PASSWORD') ?: 'SUA_SENHA';
+$port = getenv('DB_PORT') ?: '3306';
 
 $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
 

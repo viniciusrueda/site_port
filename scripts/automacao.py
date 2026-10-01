@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 def buscar_videos_youtube():
 
-    YOUTUBE_API_KEY = 'SUAPIKEYAQUI' 
+    YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY', '')
     url = 'https://www.googleapis.com/youtube/v3/videos'
 
 

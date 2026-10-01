@@ -4,10 +4,12 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Configurações do SMTP
+// As credenciais ficam em config.local.php (fora do git). Modelo: config.local.example.php
+$config = is_file(__DIR__ . '/config.local.php') ? require __DIR__ . '/config.local.php' : [];
 $SMTP_SERVER = "smtp.gmail.com";
 $SMTP_PORT = 587;
-$EMAIL_SENDER = "seuemailaqui"; 
-$EMAIL_PASSWORD = "seupasswordaqui"; 
+$EMAIL_SENDER = getenv('SMTP_USER') ?: ($config['SMTP_USER'] ?? '');
+$EMAIL_PASSWORD = getenv('SMTP_PASS') ?: ($config['SMTP_PASS'] ?? '');
 
 header('Content-Type: application/json');
 
@@ -26,12 +28,13 @@ if (empty($nome) || empty($email) || empty($mensagem)) {
     exit;
 }
 
+$esc = fn($s) => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 $corpo_email = "
     <h3>Nova mensagem recebida do site:</h3>
-    <p><strong>Nome:</strong> $nome</p>
-    <p><strong>E-mail:</strong> $email</p>
-    <p><strong>Telefone:</strong> $telefone</p>
-    <p><strong>Mensagem:</strong><br>" . nl2br($mensagem) . "</p>
+    <p><strong>Nome:</strong> {$esc($nome)}</p>
+    <p><strong>E-mail:</strong> {$esc($email)}</p>
+    <p><strong>Telefone:</strong> {$esc($telefone)}</p>
+    <p><strong>Mensagem:</strong><br>" . nl2br($esc($mensagem)) . "</p>
 ";
 
 $mail = new PHPMailer(true);
